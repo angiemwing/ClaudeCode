@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MediCore — Light Dashboard</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      /* Core palette */
+      --cream-50:  #FDFAF5;
+      --cream-100: #F7F0E6;
+      --cream-200: #EDE0CE;
+      --cream-300: #DEC9AE;
+
+      --brown-900: #2C1A0E;
+      --brown-800: #3D2410;
+      --brown-700: #5C3820;
+      --brown-600: #7A4F2E;
+      --brown-400: #A8754E;
+      --brown-300: #C49878;
+      --brown-200: #DEC0A0;
+
+      --blue-600:  #2A7FA8;
+      --blue-500:  #3A9DC8;
+      --blue-400:  #5BB8DD;
+      --blue-300:  #85CFEA;
+      --blue-100:  #D6EEF7;
+      --blue-50:   #EBF6FB;
+
+      --green:  #2E9E6B;
+      --red:    #C0392B;
+      --amber:  #C07B2A;
+
+      --bg:         var(--cream-100);
+      --surface:    var(--cream-50);
+      --sidebar-bg: var(--brown-900);
+      --border:     var(--cream-200);
+
+      --text-dark:    var(--brown-900);
+      --text-mid:     var(--brown-600);
+      --text-soft:    var(--brown-400);
+      --text-on-dark: var(--cream-100);
+
+      --sidebar-w: 230px;
+      --topbar-h:  60px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text-dark);
+      display: flex;
+      min-height: 100vh;
+      font-size: 13.5px;
+    }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      width: var(--sidebar-w);
+      background: var(--sidebar-bg);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      inset: 0 auto 0 0;
+      overflow-y: auto;
+    }
+
+    .sidebar-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 22px 20px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+
+    .logo-mark {
+      width: 34px; height: 34px;
+      background: var(--blue-400);
+      border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 17px; font-weight: 900; color: #fff;
+      letter-spacing: -1px;
+      flex-shrink: 0;
+    }
+
+    .logo-name { font-size: 15px; font-weight: 700; color: var(--cream-50); letter-spacing: -0.2px; }
+    .logo-tag  { font-size: 10px; color: rgba(255,255,255,0.35); letter-spacing: 0.8px; text-transform: uppercase; }
+
+    .nav-section {
+      font-size: 10px;
+      letter-spacing: 1.1px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.28);
+      padding: 18px 20px 6px;
+    }
+
+    .nav-link {
+      display: flex; align-items: center; gap: 10px;
+      padding: 9px 20px;
+      color: rgba(255,255,255,0.48);
+      font-size: 13px; font-weight: 500;
+      cursor: pointer; text-decoration: none;
+      transition: all 0.13s;
+      position: relative;
+    }
+
+    .nav-link:hover { color: rgba(255,255,255,0.78); background: rgba(255,255,255,0.04); }
+
+    .nav-link.active {
+      color: var(--cream-50);
+      background: rgba(91,184,221,0.14);
+    }
+
+    .nav-link.active::after {
+      content: '';
+      position: absolute;
+      right: 0; top: 4px; bottom: 4px;
+      width: 3px;
+      background: var(--blue-400);
+      border-radius: 2px 0 0 2px;
+    }
+
+    .nav-icon { width: 18px; text-align: center; font-size: 14px; flex-shrink: 0; }
+
+    .nav-pill {
+      margin-left: auto;
+      background: rgba(91,184,221,0.2);
+      color: var(--blue-300);
+      font-size: 10px; font-weight: 700;
+      padding: 2px 7px; border-radius: 10px;
+    }
+
+    .sidebar-bottom {
+      margin-top: auto;
+      border-top: 1px solid rgba(255,255,255,0.07);
+      padding: 14px 16px;
+    }
+
+    .user-row {
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.13s;
+    }
+
+    .user-row:hover { background: rgba(255,255,255,0.06); }
+
+    .avatar {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--blue-500), var(--blue-400));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700; color: #fff; flex-shrink: 0;
+    }
+
+    .user-name { font-size: 12.5px; font-weight: 600; color: var(--cream-100); }
+    .user-role { font-size: 11px; color: rgba(255,255,255,0.35); }
+
+    /* ── MAIN ── */
+    .main { margin-left: var(--sidebar-w); flex: 1; display: flex; flex-direction: column; min-width: 0; }
+
+    /* ── TOPBAR ── */
+    .topbar {
+      height: var(--topbar-h);
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 14px;
+      padding: 0 28px;
+      position: sticky; top: 0; z-index: 40;
+    }
+
+    .page-title { font-size: 17px; font-weight: 800; color: var(--text-dark); letter-spacing: -0.4px; }
+    .page-date  { font-size: 12px; color: var(--text-soft); margin-left: 2px; }
+
+    .search {
+      margin-left: auto;
+      display: flex; align-items: center; gap: 8px;
+      background: var(--cream-100);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 7px 13px;
+      width: 220px;
+    }
+
+    .search input {
+      background: none; border: none; outline: none;
+      font-size: 13px; color: var(--text-dark); width: 100%;
+    }
+
+    .search input::placeholder { color: var(--text-soft); }
+
+    .tb-actions { display: flex; align-items: center; gap: 8px; }
+
+    .tb-btn {
+      width: 34px; height: 34px; border-radius: 8px;
+      background: var(--cream-100); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; font-size: 14px; color: var(--text-mid);
+      transition: all 0.13s; position: relative;
+    }
+
+    .tb-btn:hover { border-color: var(--brown-200); color: var(--text-dark); }
+
+    .notif-dot {
+      position: absolute; top: 6px; right: 6px;
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--red); border: 1.5px solid var(--surface);
+    }
+
+    .tb-avatar {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--blue-500), var(--blue-300));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700; color: #fff; cursor: pointer;
+    }
+
+    /* ── CONTENT ── */
+    .content { padding: 24px 28px; display: flex; flex-direction: column; gap: 22px; }
+
+    /* ── WELCOME BANNER ── */
+    .banner {
+      background: var(--brown-800);
+      border-radius: 14px;
+      padding: 22px 28px;
+      display: flex; align-items: center; justify-content: space-between;
+      position: relative; overflow: hidden;
+    }
+
+    .banner::before {
+      content: '';
+      position: absolute; right: -40px; top: -40px;
+      width: 200px; height: 200px;
+      background: radial-gradient(circle, rgba(91,184,221,0.18) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+
+    .banner-text h2 { font-size: 19px; font-weight: 800; color: var(--cream-50); letter-spacing: -0.4px; }
+    .banner-text p  { font-size: 13px; color: rgba(255,255,255,0.5); margin-top: 4px; }
+
+    .banner-actions { display: flex; gap: 10px; }
+
+    .btn-primary {
+      display: flex; align-items: center; gap: 7px;
+      background: var(--blue-500); color: #fff;
+      font-size: 13px; font-weight: 600;
+      padding: 9px 17px; border-radius: 8px;
+      border: none; cursor: pointer; transition: opacity 0.13s;
+    }
+
+    .btn-primary:hover { opacity: 0.9; }
+
+    .btn-ghost {
+      display: flex; align-items: center; gap: 7px;
+      background: rgba(255,255,255,0.08); color: var(--cream-100);
+      font-size: 13px; font-weight: 500;
+      padding: 9px 17px; border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.12); cursor: pointer;
+      transition: background 0.13s;
+    }
+
+    .btn-ghost:hover { background: rgba(255,255,255,0.13); }
+
+    /* ── STATS ── */
+    .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 20px;
+      display: flex; flex-direction: column; gap: 10px;
+      transition: box-shadow 0.15s;
+    }
+
+    .stat-card:hover { box-shadow: 0 4px 16px rgba(60,36,16,0.08); }
+
+    .stat-top { display: flex; align-items: flex-start; justify-content: space-between; }
+    .stat-label { font-size: 12px; color: var(--text-soft); font-weight: 500; }
+
+    .stat-chip {
+      font-size: 10px; font-weight: 700;
+      padding: 3px 7px; border-radius: 20px;
+    }
+
+    .chip-blue  { background: var(--blue-50);          color: var(--blue-600); }
+    .chip-brown { background: rgba(122,79,46,0.10);    color: var(--brown-600); }
+    .chip-green { background: rgba(46,158,107,0.10);   color: var(--green); }
+    .chip-red   { background: rgba(192,57,43,0.10);    color: var(--red); }
+
+    .stat-val { font-size: 26px; font-weight: 800; letter-spacing: -0.8px; color: var(--text-dark); }
+
+    .stat-foot { display: flex; align-items: center; gap: 5px; font-size: 11.5px; }
+    .stat-arrow { font-size: 10px; }
+    .stat-arrow.up   { color: var(--green); }
+    .stat-arrow.down { color: var(--red); }
+    .stat-delta { font-weight: 700; }
+    .delta-up   { color: var(--green); }
+    .delta-down { color: var(--red); }
+    .stat-ref   { color: var(--text-soft); }
+
+    /* ── GRID ── */
+    .grid-2 { display: grid; grid-template-columns: 1fr 320px; gap: 18px; }
+    .grid-2b { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+
+    /* ── CARD ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .card-head {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .card-title { font-size: 13.5px; font-weight: 700; color: var(--text-dark); }
+    .card-sub   { font-size: 11px; color: var(--text-soft); margin-top: 1px; }
+    .card-link  { font-size: 12px; color: var(--blue-500); font-weight: 500; cursor: pointer; }
+    .card-link:hover { color: var(--blue-600); }
+
+    /* ── TABLE ── */
+    table { width: 100%; border-collapse: collapse; }
+
+    thead th {
+      font-size: 10.5px; font-weight: 700; letter-spacing: 0.5px;
+      text-transform: uppercase; color: var(--text-soft);
+      padding: 11px 20px; text-align: left;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap; background: var(--cream-100);
+    }
+
+    tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: var(--cream-100); }
+
+    tbody td { padding: 12px 20px; font-size: 13px; white-space: nowrap; }
+
+    .pt-cell { display: flex; align-items: center; gap: 10px; }
+    .pt-av {
+      width: 30px; height: 30px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10.5px; font-weight: 700; color: #fff; flex-shrink: 0;
+    }
+    .pt-name { font-size: 13px; font-weight: 600; color: var(--text-dark); }
+    .pt-id   { font-size: 11px; color: var(--text-soft); }
+
+    .badge {
+      display: inline-flex; align-items: center; gap: 3px;
+      padding: 3px 9px; border-radius: 20px;
+      font-size: 11px; font-weight: 600;
+    }
+
+    .b-green  { background: rgba(46,158,107,0.10);  color: var(--green); }
+    .b-amber  { background: rgba(192,123,42,0.12);  color: var(--amber); }
+    .b-blue   { background: var(--blue-50);         color: var(--blue-600); }
+    .b-red    { background: rgba(192,57,43,0.10);   color: var(--red); }
+    .b-brown  { background: rgba(122,79,46,0.10);   color: var(--brown-600); }
+
+    /* ── SCHEDULE ── */
+    .sched-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer; transition: background 0.1s;
+    }
+
+    .sched-item:last-child { border-bottom: none; }
+    .sched-item:hover { background: var(--cream-100); }
+
+    .sched-time { width: 44px; flex-shrink: 0; text-align: right; }
+    .sched-hr   { font-size: 12px; font-weight: 800; color: var(--blue-600); }
+    .sched-ap   { font-size: 10px; color: var(--text-soft); }
+
+    .sched-bar { width: 2px; height: 34px; border-radius: 1px; flex-shrink: 0; }
+
+    .sched-info { flex: 1; }
+    .sched-name { font-size: 13px; font-weight: 600; color: var(--text-dark); }
+    .sched-type { font-size: 11px; color: var(--text-soft); margin-top: 1px; }
+
+    .sched-av {
+      width: 28px; height: 28px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 700; color: #fff; flex-shrink: 0;
+    }
+
+    /* ── DONUT ── */
+    .donut-body { display: flex; align-items: center; gap: 20px; padding: 20px; }
+
+    .donut-labels { display: flex; flex-direction: column; gap: 9px; flex: 1; }
+
+    .dl-item { display: flex; align-items: center; justify-content: space-between; font-size: 12px; }
+    .dl-left { display: flex; align-items: center; gap: 7px; color: var(--text-mid); }
+    .dl-dot  { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .dl-val  { font-weight: 700; color: var(--text-dark); }
+
+    /* ── CHART ── */
+    .chart-body { padding: 16px 20px 8px; }
+
+    .chart-legend { display: flex; gap: 14px; margin-bottom: 12px; }
+    .cl-item { display: flex; align-items: center; gap: 5px; font-size: 11.5px; color: var(--text-soft); }
+    .cl-dot  { width: 7px; height: 7px; border-radius: 50%; }
+
+    svg.linechart { width: 100%; display: block; }
+
+    /* ── METRICS ── */
+    .metric-item {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .metric-item:last-child { border-bottom: none; }
+    .metric-lbl { font-size: 13px; color: var(--text-mid); }
+    .metric-val { font-size: 13.5px; font-weight: 700; color: var(--text-dark); }
+
+    .pbar-row {
+      display: flex; flex-direction: column; gap: 6px;
+      padding: 12px 20px; border-bottom: 1px solid var(--border);
+    }
+
+    .pbar-row:last-child { border-bottom: none; }
+    .pbar-top { display: flex; justify-content: space-between; font-size: 12px; }
+    .pbar-lbl { color: var(--text-mid); }
+    .pbar-pct { font-weight: 700; color: var(--text-dark); }
+    .pbar-bg  { height: 5px; background: var(--cream-200); border-radius: 3px; overflow: hidden; }
+    .pbar-fg  { height: 100%; border-radius: 3px; }
+
+    /* ── ACTIVITY ── */
+    .act-list { display: flex; flex-direction: column; }
+
+    .act-item { display: flex; gap: 11px; padding: 11px 20px; }
+
+    .act-line-col { display: flex; flex-direction: column; align-items: center; width: 10px; flex-shrink: 0; padding-top: 4px; }
+    .act-dot  { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+    .act-rule { width: 1px; flex: 1; background: var(--cream-200); margin-top: 4px; min-height: 16px; }
+
+    .act-body { flex: 1; }
+    .act-text { font-size: 12.5px; color: var(--text-mid); line-height: 1.45; }
+    .act-text strong { color: var(--text-dark); font-weight: 600; }
+    .act-time { font-size: 11px; color: var(--text-soft); margin-top: 2px; }
+
+    /* ── QUICK ACTIONS ── */
+    .qa-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 16px 20px; }
+
+    .qa-btn {
+      display: flex; flex-direction: column; align-items: center; gap: 7px;
+      padding: 14px 10px;
+      background: var(--cream-100);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      cursor: pointer; transition: all 0.13s;
+    }
+
+    .qa-btn:hover { border-color: var(--blue-300); background: var(--blue-50); }
+
+    .qa-icon { font-size: 20px; }
+    .qa-label { font-size: 11px; font-weight: 600; color: var(--text-mid); text-align: center; }
+  </style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-mark">M+</div>
+    <div>
+      <div class="logo-name">MediCore</div>
+      <div class="logo-tag">Healthcare SaaS</div>
+    </div>
+  </div>
+
+  <div class="nav-section">Main</div>
+  <a class="nav-link active"><span class="nav-icon">&#9676;</span> Dashboard</a>
+  <a class="nav-link"><span class="nav-icon">&#128101;</span> Patients <span class="nav-pill">248</span></a>
+  <a class="nav-link"><span class="nav-icon">&#128197;</span> Appointments <span class="nav-pill">12</span></a>
+  <a class="nav-link"><span class="nav-icon">&#128138;</span> Prescriptions</a>
+  <a class="nav-link"><span class="nav-icon">&#129514;</span> Lab Results <span class="nav-pill">3</span></a>
+  <a class="nav-link"><span class="nav-icon">&#128203;</span> Records</a>
+
+  <div class="nav-section">Analytics</div>
+  <a class="nav-link"><span class="nav-icon">&#128202;</span> Reports</a>
+  <a class="nav-link"><span class="nav-icon">&#128176;</span> Billing</a>
+  <a class="nav-link"><span class="nav-icon">&#128230;</span> Inventory</a>
+
+  <div class="nav-section">System</div>
+  <a class="nav-link"><span class="nav-icon">&#128276;</span> Notifications</a>
+  <a class="nav-link"><span class="nav-icon">&#9881;</span> Settings</a>
+
+  <div class="sidebar-bottom">
+    <div class="user-row">
+      <div class="avatar">RO</div>
+      <div>
+        <div class="user-name">Dr. R. Okafor</div>
+        <div class="user-role">Chief Medical Officer</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div>
+      <div class="page-title">Dashboard</div>
+    </div>
+    <span class="page-date">Wednesday, March 4, 2026</span>
+
+    <div class="search">
+      <span style="color:var(--text-soft); font-size:13px">&#128269;</span>
+      <input placeholder="Search patients, records..." />
+    </div>
+
+    <div class="tb-actions">
+      <div class="tb-btn">&#128276;<span class="notif-dot"></span></div>
+      <div class="tb-btn">&#128262;</div>
+      <div class="tb-avatar">RO</div>
+    </div>
+  </header>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- BANNER -->
+    <div class="banner">
+      <div class="banner-text">
+        <h2>Good morning, Dr. Okafor</h2>
+        <p>You have <strong style="color:var(--blue-300)">12 appointments</strong> today and <strong style="color:var(--blue-300)">3 pending lab results</strong> awaiting review.</p>
+      </div>
+      <div class="banner-actions">
+        <button class="btn-ghost">View Schedule</button>
+        <button class="btn-primary">+ New Patient</button>
+      </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-top">
+          <span class="stat-label">Total Patients</span>
+          <span class="stat-chip chip-blue">Active</span>
+        </div>
+        <div class="stat-val">2,847</div>
+        <div class="stat-foot">
+          <span class="stat-arrow up">&#9650;</span>
+          <span class="stat-delta delta-up">8.2%</span>
+          <span class="stat-ref">vs last month</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-top">
+          <span class="stat-label">Today's Appointments</span>
+          <span class="stat-chip chip-brown">Today</span>
+        </div>
+        <div class="stat-val">12</div>
+        <div class="stat-foot">
+          <span class="stat-arrow up">&#9650;</span>
+          <span class="stat-delta delta-up">+2</span>
+          <span class="stat-ref">vs yesterday</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-top">
+          <span class="stat-label">Monthly Revenue</span>
+          <span class="stat-chip chip-green">On track</span>
+        </div>
+        <div class="stat-val">$84.2K</div>
+        <div class="stat-foot">
+          <span class="stat-arrow up">&#9650;</span>
+          <span class="stat-delta delta-up">12.5%</span>
+          <span class="stat-ref">vs last month</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-top">
+          <span class="stat-label">Recovery Rate</span>
+          <span class="stat-chip chip-red">&#9660; Slight dip</span>
+        </div>
+        <div class="stat-val">94.7%</div>
+        <div class="stat-foot">
+          <span class="stat-arrow down">&#9660;</span>
+          <span class="stat-delta delta-down">0.3%</span>
+          <span class="stat-ref">vs last month</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN ROW -->
+    <div class="grid-2">
+
+      <!-- PATIENTS TABLE -->
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <div class="card-title">Recent Patients</div>
+            <div class="card-sub">28 new admissions this week</div>
+          </div>
+          <span class="card-link">View all &rarr;</span>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Patient</th>
+              <th>Condition</th>
+              <th>Physician</th>
+              <th>Date</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div class="pt-cell">
+                  <div class="pt-av" style="background:linear-gradient(135deg,#5C3820,#A8754E)">AM</div>
+                  <div><div class="pt-name">Amara Mitchell</div><div class="pt-id">#PT-00821</div></div>
+                </div>
+              </td>
+              <td style="color:var(--text-mid)">Hypertension</td>
+              <td style="color:var(--text-mid)">Dr. Okafor</td>
+              <td style="color:var(--text-soft)">Mar 4</td>
+              <td><span class="badge b-green">Stable</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="pt-cell">
+                  <div class="pt-av" style="background:linear-gradient(135deg,#2A7FA8,#5BB8DD)">JK</div>
+                  <div><div class="pt-name">James Kowalski</div><div class="pt-id">#PT-00820</div></div>
+                </div>
+              </td>
+              <td style="color:var(--text-mid)">Diabetes T2</td>
+              <td style="color:var(--text-mid)">Dr. Patel</td>
+              <td style="color:var(--text-soft)">Mar 3</td>
+              <td><span class="badge b-amber">Monitoring</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="pt-cell">
+                  <div class="pt-av" style="background:linear-gradient(135deg,#3D2410,#7A4F2E)">SL</div>
+                  <div><div class="pt-name">Sofia Laureano</div><div class="pt-id">#PT-00819</div></div>
+                </div>
+              </td>
+              <td style="color:var(--text-mid)">Pneumonia</td>
+              <td style="color:var(--text-mid)">Dr. Chen</td>
+              <td style="color:var(--text-soft)">Mar 2</td>
+              <td><span class="badge b-blue">Admitted</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="pt-cell">
+                  <div class="pt-av" style="background:linear-gradient(135deg,#8B2A2A,#C04040)">RW</div>
+                  <div><div class="pt-name">Robert Wachira</div><div class="pt-id">#PT-00818</div></div>
+                </div>
+              </td>
+              <td style="color:var(--text-mid)">Post-Op Care</td>
+              <td style="color:var(--text-mid)">Dr. Okafor</td>
+              <td style="color:var(--text-soft)">Mar 1</td>
+              <td><span class="badge b-red">Critical</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="pt-cell">
+                  <div class="pt-av" style="background:linear-gradient(135deg,#2A6B3A,#3E9E55)">NG</div>
+                  <div><div class="pt-name">Nadia Greene</div><div class="pt-id">#PT-00817</div></div>
+                </div>
+              </td>
+              <td style="color:var(--text-mid)">Asthma</td>
+              <td style="color:var(--text-mid)">Dr. Patel</td>
+              <td style="color:var(--text-soft)">Feb 28</td>
+              <td><span class="badge b-brown">Improving</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- RIGHT COLUMN -->
+      <div style="display:flex; flex-direction:column; gap:18px;">
+
+        <!-- TODAY'S SCHEDULE -->
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <div class="card-title">Today's Schedule</div>
+              <div class="card-sub">12 appointments</div>
+            </div>
+            <span class="card-link">Expand</span>
+          </div>
+          <div>
+            <div class="sched-item">
+              <div class="sched-time">
+                <div class="sched-hr">09:00</div>
+                <div class="sched-ap">AM</div>
+              </div>
+              <div class="sched-bar" style="background:var(--blue-400)"></div>
+              <div class="sched-info">
+                <div class="sched-name">Amara Mitchell</div>
+                <div class="sched-type">Follow-up &middot; Cardiology</div>
+              </div>
+              <span class="badge b-blue" style="font-size:10px">Now</span>
+            </div>
+            <div class="sched-item">
+              <div class="sched-time">
+                <div class="sched-hr">10:30</div>
+                <div class="sched-ap">AM</div>
+              </div>
+              <div class="sched-bar" style="background:var(--brown-300)"></div>
+              <div class="sched-info">
+                <div class="sched-name">Marcus Adeyemi</div>
+                <div class="sched-type">New Patient &middot; General</div>
+              </div>
+              <span class="badge b-amber" style="font-size:10px">Soon</span>
+            </div>
+            <div class="sched-item">
+              <div class="sched-time">
+                <div class="sched-hr">11:45</div>
+                <div class="sched-ap">AM</div>
+              </div>
+              <div class="sched-bar" style="background:var(--cream-200)"></div>
+              <div class="sched-info">
+                <div class="sched-name">Elena Vasquez</div>
+                <div class="sched-type">Lab Review &middot; Oncology</div>
+              </div>
+            </div>
+            <div class="sched-item">
+              <div class="sched-time">
+                <div class="sched-hr">02:00</div>
+                <div class="sched-ap">PM</div>
+              </div>
+              <div class="sched-bar" style="background:var(--blue-200, #B8DEF0)"></div>
+              <div class="sched-info">
+                <div class="sched-name">Thomas Eriksson</div>
+                <div class="sched-type">Check-up &middot; Neurology</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DEPT DONUT -->
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <div class="card-title">Department Load</div>
+              <div class="card-sub">248 active patients</div>
+            </div>
+          </div>
+          <div class="donut-body">
+            <svg width="110" height="110" viewBox="0 0 110 110" style="flex-shrink:0">
+              <circle cx="55" cy="55" r="38" fill="none" stroke="#EDE0CE" stroke-width="18"/>
+              <circle cx="55" cy="55" r="38" fill="none" stroke="#3A9DC8" stroke-width="18"
+                stroke-dasharray="81 159" stroke-dashoffset="0" transform="rotate(-90 55 55)"/>
+              <circle cx="55" cy="55" r="38" fill="none" stroke="#7A4F2E" stroke-width="18"
+                stroke-dasharray="67 173" stroke-dashoffset="-81" transform="rotate(-90 55 55)"/>
+              <circle cx="55" cy="55" r="38" fill="none" stroke="#E0A840" stroke-width="18"
+                stroke-dasharray="48 192" stroke-dashoffset="-148" transform="rotate(-90 55 55)"/>
+              <circle cx="55" cy="55" r="38" fill="none" stroke="#2E9E6B" stroke-width="18"
+                stroke-dasharray="43 197" stroke-dashoffset="-196" transform="rotate(-90 55 55)"/>
+              <text x="55" y="50" text-anchor="middle" fill="#2C1A0E" font-size="15" font-weight="800" font-family="sans-serif">248</text>
+              <text x="55" y="63" text-anchor="middle" fill="#A8754E" font-size="8.5" font-family="sans-serif">patients</text>
+            </svg>
+            <div class="donut-labels">
+              <div class="dl-item">
+                <div class="dl-left"><div class="dl-dot" style="background:#3A9DC8"></div>Cardiology</div>
+                <div class="dl-val">34%</div>
+              </div>
+              <div class="dl-item">
+                <div class="dl-left"><div class="dl-dot" style="background:#7A4F2E"></div>General</div>
+                <div class="dl-val">28%</div>
+              </div>
+              <div class="dl-item">
+                <div class="dl-left"><div class="dl-dot" style="background:#E0A840"></div>Oncology</div>
+                <div class="dl-val">20%</div>
+              </div>
+              <div class="dl-item">
+                <div class="dl-left"><div class="dl-dot" style="background:#2E9E6B"></div>Neurology</div>
+                <div class="dl-val">18%</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- BOTTOM ROW -->
+    <div class="grid-2b">
+
+      <!-- ADMISSIONS CHART -->
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <div class="card-title">Patient Admissions</div>
+            <div class="card-sub">8-week trend</div>
+          </div>
+          <div class="chart-legend">
+            <div class="cl-item"><div class="cl-dot" style="background:#3A9DC8"></div>Admissions</div>
+            <div class="cl-item"><div class="cl-dot" style="background:#7A4F2E"></div>Discharges</div>
+          </div>
+        </div>
+        <div class="chart-body">
+          <svg class="linechart" viewBox="0 0 480 160" preserveAspectRatio="none" height="160">
+            <defs>
+              <linearGradient id="ga" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#3A9DC8" stop-opacity="0.18"/>
+                <stop offset="100%" stop-color="#3A9DC8" stop-opacity="0"/>
+              </linearGradient>
+              <linearGradient id="gb" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#7A4F2E" stop-opacity="0.14"/>
+                <stop offset="100%" stop-color="#7A4F2E" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <!-- Grid -->
+            <line x1="0" y1="15"  x2="480" y2="15"  stroke="#EDE0CE" stroke-width="1"/>
+            <line x1="0" y1="50"  x2="480" y2="50"  stroke="#EDE0CE" stroke-width="1"/>
+            <line x1="0" y1="85"  x2="480" y2="85"  stroke="#EDE0CE" stroke-width="1"/>
+            <line x1="0" y1="120" x2="480" y2="120" stroke="#EDE0CE" stroke-width="1"/>
+            <!-- Y labels -->
+            <text x="4" y="13"  fill="#A8754E" font-size="8" font-family="sans-serif">80</text>
+            <text x="4" y="48"  fill="#A8754E" font-size="8" font-family="sans-serif">60</text>
+            <text x="4" y="83"  fill="#A8754E" font-size="8" font-family="sans-serif">40</text>
+            <text x="4" y="118" fill="#A8754E" font-size="8" font-family="sans-serif">20</text>
+            <!-- Admissions fill -->
+            <path d="M25,110 L90,82 L155,62 L220,40 L285,70 L350,32 L415,22 L470,46 L470,155 L25,155 Z" fill="url(#ga)"/>
+            <!-- Admissions line -->
+            <polyline points="25,110 90,82 155,62 220,40 285,70 350,32 415,22 470,46"
+              fill="none" stroke="#3A9DC8" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+            <!-- Discharges fill -->
+            <path d="M25,120 L90,104 L155,92 L220,74 L285,92 L350,64 L415,58 L470,72 L470,155 L25,155 Z" fill="url(#gb)"/>
+            <!-- Discharges line -->
+            <polyline points="25,120 90,104 155,92 220,74 285,92 350,64 415,58 470,72"
+              fill="none" stroke="#7A4F2E" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="5,3"/>
+            <!-- Dots -->
+            <circle cx="25"  cy="110" r="3.5" fill="#3A9DC8" stroke="#FDFAF5" stroke-width="1.5"/>
+            <circle cx="90"  cy="82"  r="3.5" fill="#3A9DC8" stroke="#FDFAF5" stroke-width="1.5"/>
+            <circle cx="155" cy="62"  r="3.5" fill="#3A9DC8" stroke="#FDFAF5" stroke-width="1.5"/>
+            <circle cx="220" cy="40"  r="3.5" fill="#3A9DC8" stroke="#FDFAF5" stroke-width="1.5"/>
+            <circle cx="285" cy="70"  r="3.5" fill="#3A9DC8" stroke="#FDFAF5" stroke-width="1.5"/>
+            <circle cx="350" cy="32"  r="3.5" fill="#3A9DC8" stroke="#FDFAF5" stroke-width="1.5"/>
+            <circle cx="415" cy="22"  r="3.5" fill="#3A9DC8" stroke="#FDFAF5" stroke-width="1.5"/>
+            <circle cx="470" cy="46"  r="3.5" fill="#3A9DC8" stroke="#FDFAF5" stroke-width="1.5"/>
+            <!-- X labels -->
+            <text x="12"  y="150" fill="#A8754E" font-size="8" font-family="sans-serif">Jan 5</text>
+            <text x="76"  y="150" fill="#A8754E" font-size="8" font-family="sans-serif">Jan 19</text>
+            <text x="142" y="150" fill="#A8754E" font-size="8" font-family="sans-serif">Feb 2</text>
+            <text x="208" y="150" fill="#A8754E" font-size="8" font-family="sans-serif">Feb 16</text>
+            <text x="273" y="150" fill="#A8754E" font-size="8" font-family="sans-serif">Mar 2</text>
+            <text x="338" y="150" fill="#A8754E" font-size="8" font-family="sans-serif">Mar 16</text>
+            <text x="403" y="150" fill="#A8754E" font-size="8" font-family="sans-serif">Mar 30</text>
+            <text x="458" y="150" fill="#A8754E" font-size="8" font-family="sans-serif">Apr</text>
+          </svg>
+        </div>
+      </div>
+
+      <!-- RIGHT: Metrics + Activity -->
+      <div style="display:flex; flex-direction:column; gap:18px;">
+
+        <!-- QUICK ACTIONS -->
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">Quick Actions</div>
+          </div>
+          <div class="qa-grid">
+            <div class="qa-btn"><div class="qa-icon">&#128100;</div><div class="qa-label">Add Patient</div></div>
+            <div class="qa-btn"><div class="qa-icon">&#128197;</div><div class="qa-label">Schedule</div></div>
+            <div class="qa-btn"><div class="qa-icon">&#129514;</div><div class="qa-label">Lab Order</div></div>
+            <div class="qa-btn"><div class="qa-icon">&#128138;</div><div class="qa-label">Prescribe</div></div>
+          </div>
+        </div>
+
+        <!-- OPERATIONAL METRICS -->
+        <div class="card">
+          <div class="card-head"><div class="card-title">Operational Metrics</div></div>
+          <div class="pbar-row">
+            <div class="pbar-top"><span class="pbar-lbl">Bed Occupancy</span><span class="pbar-pct">78%</span></div>
+            <div class="pbar-bg"><div class="pbar-fg" style="width:78%; background:#3A9DC8"></div></div>
+          </div>
+          <div class="pbar-row">
+            <div class="pbar-top"><span class="pbar-lbl">Staff Utilization</span><span class="pbar-pct">91%</span></div>
+            <div class="pbar-bg"><div class="pbar-fg" style="width:91%; background:#7A4F2E"></div></div>
+          </div>
+          <div class="pbar-row">
+            <div class="pbar-top"><span class="pbar-lbl">Equipment Available</span><span class="pbar-pct">85%</span></div>
+            <div class="pbar-bg"><div class="pbar-fg" style="width:85%; background:#2E9E6B"></div></div>
+          </div>
+          <div class="metric-item"><span class="metric-lbl">Avg. Wait Time</span><span class="metric-val">18 min</span></div>
+          <div class="metric-item"><span class="metric-lbl">Avg. Stay Duration</span><span class="metric-val">3.4 days</span></div>
+          <div class="metric-item"><span class="metric-lbl">Readmission Rate</span><span class="metric-val" style="color:var(--green)">4.2%</span></div>
+        </div>
+
+        <!-- ACTIVITY -->
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">Recent Activity</div>
+            <span class="card-link">Clear</span>
+          </div>
+          <div class="act-list">
+            <div class="act-item">
+              <div class="act-line-col"><div class="act-dot" style="background:#2E9E6B"></div><div class="act-rule"></div></div>
+              <div class="act-body">
+                <div class="act-text"><strong>Amara Mitchell</strong> lab results — all clear</div>
+                <div class="act-time">2 min ago</div>
+              </div>
+            </div>
+            <div class="act-item">
+              <div class="act-line-col"><div class="act-dot" style="background:#C07B2A"></div><div class="act-rule"></div></div>
+              <div class="act-body">
+                <div class="act-text"><strong>Robert Wachira</strong> moved to ICU</div>
+                <div class="act-time">14 min ago</div>
+              </div>
+            </div>
+            <div class="act-item">
+              <div class="act-line-col"><div class="act-dot" style="background:#3A9DC8"></div><div class="act-rule"></div></div>
+              <div class="act-body">
+                <div class="act-text">Prescription issued for <strong>James Kowalski</strong></div>
+                <div class="act-time">31 min ago</div>
+              </div>
+            </div>
+            <div class="act-item">
+              <div class="act-line-col"><div class="act-dot" style="background:#7A4F2E"></div></div>
+              <div class="act-body">
+                <div class="act-text"><strong>Sofia Laureano</strong> admitted to Ward B</div>
+                <div class="act-time">1 hr ago</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>
