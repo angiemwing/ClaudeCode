@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Verdana ESG — Dashboard</title>
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --brown-900: #2C1A0E;
+      --brown-800: #3D2B1F;
+      --brown-700: #5C3D28;
+      --brown-600: #7A5235;
+      --brown-500: #9B6B45;
+      --brown-400: #B98A62;
+      --brown-300: #D4AC87;
+      --brown-200: #E8D1B3;
+      --brown-100: #F5EBD9;
+      --brown-50:  #FAF5EE;
+      --white:     #FFFFFF;
+      --off-white: #F9F6F1;
+      --green:     #3A7D44;
+      --green-light: #E8F5EB;
+      --blue:      #2B6CB0;
+      --blue-light: #EBF4FF;
+      --amber:     #B7791F;
+      --amber-light: #FEF3C7;
+      --red:       #C53030;
+      --red-light: #FFF5F5;
+      --text-primary: #2C1A0E;
+      --text-secondary: #7A5235;
+      --text-muted: #B98A62;
+      --border: #E8D1B3;
+      --shadow: 0 1px 3px rgba(44,26,14,.08), 0 4px 16px rgba(44,26,14,.06);
+      --shadow-md: 0 4px 24px rgba(44,26,14,.12);
+      --radius: 12px;
+      --radius-sm: 8px;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--off-white);
+      color: var(--text-primary);
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ── Sidebar ────────────────────────────────── */
+    .sidebar {
+      width: 256px;
+      min-height: 100vh;
+      background: var(--brown-800);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      z-index: 100;
+    }
+
+    .sidebar-logo {
+      padding: 28px 24px 24px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+
+    .logo-mark {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-icon {
+      width: 36px; height: 36px;
+      background: var(--brown-400);
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+    }
+
+    .logo-icon svg { width: 20px; height: 20px; fill: white; }
+
+    .logo-name {
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -.3px;
+    }
+
+    .logo-tag {
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--brown-300);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    .sidebar-nav {
+      padding: 20px 12px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .nav-section-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--brown-400);
+      padding: 12px 12px 6px;
+      margin-top: 8px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: var(--radius-sm);
+      color: var(--brown-200);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background .15s, color .15s;
+      text-decoration: none;
+    }
+
+    .nav-item:hover { background: rgba(255,255,255,.06); color: #fff; }
+
+    .nav-item.active {
+      background: var(--brown-600);
+      color: #fff;
+    }
+
+    .nav-item svg { width: 18px; height: 18px; flex-shrink: 0; }
+
+    .nav-badge {
+      margin-left: auto;
+      background: var(--brown-500);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 20px;
+    }
+
+    .sidebar-footer {
+      padding: 16px 12px;
+      border-top: 1px solid rgba(255,255,255,.08);
+    }
+
+    .user-card {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+    }
+
+    .user-card:hover { background: rgba(255,255,255,.06); }
+
+    .avatar {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      background: var(--brown-500);
+      display: grid;
+      place-items: center;
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      flex-shrink: 0;
+    }
+
+    .user-info { flex: 1; min-width: 0; }
+    .user-name { font-size: 13px; font-weight: 600; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .user-role { font-size: 11px; color: var(--brown-300); }
+
+    /* ── Main Layout ────────────────────────────── */
+    .main {
+      margin-left: 256px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* ── Header ─────────────────────────────────── */
+    .header {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 0 32px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .header-title { flex: 1; }
+    .header-title h1 { font-size: 17px; font-weight: 700; color: var(--text-primary); }
+    .header-title p { font-size: 12px; color: var(--text-muted); margin-top: 1px; }
+
+    .header-search {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--brown-50);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 7px 14px;
+      width: 220px;
+    }
+
+    .header-search svg { width: 15px; height: 15px; color: var(--text-muted); flex-shrink: 0; }
+    .header-search input {
+      border: none;
+      background: none;
+      outline: none;
+      font-size: 13px;
+      color: var(--text-primary);
+      width: 100%;
+    }
+    .header-search input::placeholder { color: var(--text-muted); }
+
+    .header-actions { display: flex; align-items: center; gap: 8px; }
+
+    .btn-icon {
+      width: 36px; height: 36px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--white);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      transition: background .15s;
+      position: relative;
+    }
+    .btn-icon:hover { background: var(--brown-50); }
+    .btn-icon svg { width: 17px; height: 17px; color: var(--text-secondary); }
+
+    .notif-dot {
+      position: absolute;
+      top: 7px; right: 7px;
+      width: 7px; height: 7px;
+      background: var(--brown-500);
+      border-radius: 50%;
+      border: 2px solid var(--white);
+    }
+
+    .btn-primary {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--brown-700);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 8px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .15s;
+    }
+    .btn-primary:hover { background: var(--brown-800); }
+    .btn-primary svg { width: 15px; height: 15px; }
+
+    /* ── Content ─────────────────────────────────── */
+    .content { padding: 28px 32px; flex: 1; }
+
+    /* ── ESG Score Banner ────────────────────────── */
+    .score-banner {
+      background: linear-gradient(135deg, var(--brown-800) 0%, var(--brown-700) 100%);
+      border-radius: var(--radius);
+      padding: 28px 32px;
+      display: flex;
+      align-items: center;
+      gap: 40px;
+      margin-bottom: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .score-banner::before {
+      content: '';
+      position: absolute;
+      top: -40px; right: -40px;
+      width: 200px; height: 200px;
+      background: rgba(255,255,255,.04);
+      border-radius: 50%;
+    }
+
+    .score-banner::after {
+      content: '';
+      position: absolute;
+      bottom: -60px; right: 80px;
+      width: 160px; height: 160px;
+      background: rgba(255,255,255,.03);
+      border-radius: 50%;
+    }
+
+    .score-main { flex: 1; }
+    .score-label { font-size: 12px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--brown-300); margin-bottom: 6px; }
+    .score-value { font-size: 52px; font-weight: 800; color: #fff; line-height: 1; letter-spacing: -2px; }
+    .score-value span { font-size: 24px; font-weight: 500; color: var(--brown-300); margin-left: 2px; }
+    .score-change { display: flex; align-items: center; gap: 6px; margin-top: 10px; }
+    .change-badge { display: flex; align-items: center; gap: 4px; background: rgba(58,125,68,.25); color: #6FCF97; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+    .score-sub { font-size: 12px; color: var(--brown-300); }
+
+    .score-divider { width: 1px; height: 80px; background: rgba(255,255,255,.12); }
+
+    .score-pillar { text-align: center; min-width: 90px; }
+    .pillar-label { font-size: 11px; font-weight: 600; letter-spacing: .5px; text-transform: uppercase; color: var(--brown-300); margin-bottom: 8px; }
+    .pillar-ring { position: relative; width: 64px; height: 64px; margin: 0 auto 8px; }
+    .pillar-ring svg { width: 64px; height: 64px; transform: rotate(-90deg); }
+    .pillar-ring .track { fill: none; stroke: rgba(255,255,255,.1); stroke-width: 6; }
+    .pillar-ring .fill  { fill: none; stroke-width: 6; stroke-linecap: round; transition: stroke-dashoffset .6s; }
+    .pillar-num { position: absolute; inset: 0; display: grid; place-items: center; font-size: 16px; font-weight: 700; color: #fff; }
+    .pillar-name { font-size: 12px; color: var(--brown-200); font-weight: 500; }
+
+    /* ── KPI Cards ───────────────────────────────── */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .kpi-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      box-shadow: var(--shadow);
+      transition: box-shadow .2s;
+    }
+    .kpi-card:hover { box-shadow: var(--shadow-md); }
+
+    .kpi-top { display: flex; align-items: flex-start; justify-content: space-between; }
+    .kpi-icon { width: 40px; height: 40px; border-radius: 10px; display: grid; place-items: center; }
+    .kpi-icon svg { width: 20px; height: 20px; }
+    .kpi-icon.green { background: var(--green-light); color: var(--green); }
+    .kpi-icon.brown { background: var(--brown-100); color: var(--brown-700); }
+    .kpi-icon.blue  { background: var(--blue-light);  color: var(--blue); }
+    .kpi-icon.amber { background: var(--amber-light); color: var(--amber); }
+
+    .kpi-trend { display: flex; align-items: center; gap: 3px; font-size: 12px; font-weight: 600; }
+    .kpi-trend.up   { color: var(--green); }
+    .kpi-trend.down { color: var(--red); }
+    .kpi-trend svg  { width: 14px; height: 14px; }
+
+    .kpi-value { font-size: 28px; font-weight: 800; color: var(--text-primary); letter-spacing: -1px; line-height: 1; }
+    .kpi-value small { font-size: 14px; font-weight: 500; color: var(--text-muted); margin-left: 2px; }
+    .kpi-label { font-size: 13px; font-weight: 500; color: var(--text-secondary); }
+    .kpi-sub { font-size: 11px; color: var(--text-muted); }
+
+    /* ── Charts Row ──────────────────────────────── */
+    .charts-row {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 24px 0;
+    }
+
+    .card-title { font-size: 15px; font-weight: 700; color: var(--text-primary); }
+    .card-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+    .card-actions { display: flex; gap: 6px; }
+
+    .pill-tab {
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: var(--white);
+      color: var(--text-secondary);
+      transition: all .15s;
+    }
+    .pill-tab.active {
+      background: var(--brown-700);
+      color: #fff;
+      border-color: var(--brown-700);
+    }
+
+    .card-body { padding: 20px 24px 24px; }
+
+    .chart-wrap { position: relative; }
+
+    /* ── Bottom Row ──────────────────────────────── */
+    .bottom-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    /* ── Table ───────────────────────────────────── */
+    .table-wrap { overflow-x: auto; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    thead th {
+      text-align: left;
+      padding: 10px 16px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .5px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border);
+      background: var(--brown-50);
+    }
+
+    tbody tr { border-bottom: 1px solid var(--border); transition: background .12s; }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: var(--brown-50); }
+
+    tbody td { padding: 12px 16px; color: var(--text-primary); vertical-align: middle; }
+
+    .proj-name { font-weight: 600; font-size: 13px; }
+    .proj-client { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .status-pill::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+    .status-pill.active    { background: var(--green-light);  color: var(--green); }
+    .status-pill.review    { background: var(--amber-light);  color: var(--amber); }
+    .status-pill.planned   { background: var(--blue-light);   color: var(--blue); }
+    .status-pill.complete  { background: var(--brown-100);    color: var(--brown-700); }
+
+    .progress-bar-wrap { width: 80px; }
+    .progress-bar-bg { height: 6px; border-radius: 3px; background: var(--brown-100); overflow: hidden; }
+    .progress-bar-fill { height: 100%; border-radius: 3px; background: var(--brown-500); }
+
+    /* ── Goals ───────────────────────────────────── */
+    .goals-list { display: flex; flex-direction: column; gap: 16px; }
+
+    .goal-item {}
+    .goal-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+    .goal-name { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+    .goal-pct  { font-size: 13px; font-weight: 700; color: var(--brown-700); }
+    .goal-bar-bg { height: 8px; border-radius: 4px; background: var(--brown-100); overflow: hidden; }
+    .goal-bar-fill { height: 100%; border-radius: 4px; transition: width .6s; }
+    .goal-meta { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+
+    /* ── Scrollbar ───────────────────────────────── */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--brown-200); border-radius: 3px; }
+  </style>
+</head>
+<body>
+
+<!-- ────────────────── SIDEBAR ────────────────── -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-mark">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 2C7.58 2 4 5.58 4 10c0 5.25 7.04 11.35 7.34 11.6.18.15.39.23.61.23s.43-.08.61-.23C12.96 21.35 20 15.25 20 10c0-4.42-3.58-8-8-8zm0 11a3 3 0 110-6 3 3 0 010 6z"/></svg>
+      </div>
+      <div>
+        <div class="logo-name">Verdana ESG</div>
+        <div class="logo-tag">Consultancy</div>
+      </div>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="nav-item active" href="#">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      Dashboard
+    </a>
+
+    <div class="nav-section-label">Analysis</div>
+
+    <a class="nav-item" href="#">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      ESG Performance
+      <span class="nav-badge">New</span>
+    </a>
+    <a class="nav-item" href="#">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+      Carbon Tracker
+    </a>
+    <a class="nav-item" href="#">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+      Social Impact
+    </a>
+    <a class="nav-item" href="#">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+      Governance
+    </a>
+
+    <div class="nav-section-label">Management</div>
+
+    <a class="nav-item" href="#">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      Reports
+    </a>
+    <a class="nav-item" href="#">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+      Projects
+      <span class="nav-badge">8</span>
+    </a>
+    <a class="nav-item" href="#">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/></svg>
+      Settings
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="user-card">
+      <div class="avatar">SC</div>
+      <div class="user-info">
+        <div class="user-name">Sarah Chen</div>
+        <div class="user-role">Senior ESG Analyst</div>
+      </div>
+      <svg fill="none" stroke="rgba(255,255,255,.4)" stroke-width="2" width="16" height="16" viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+    </div>
+  </div>
+</aside>
+
+<!-- ────────────────── MAIN ────────────────── -->
+<div class="main">
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-title">
+      <h1>Overview Dashboard</h1>
+      <p>Q1 2026 &middot; Reporting period: Jan &ndash; Mar 2026</p>
+    </div>
+
+    <div class="header-search">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Search metrics, reports&hellip;" />
+    </div>
+
+    <div class="header-actions">
+      <button class="btn-icon" title="Notifications">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+        <span class="notif-dot"></span>
+      </button>
+      <button class="btn-icon" title="Calendar">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      </button>
+      <button class="btn-primary">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Export Report
+      </button>
+    </div>
+  </header>
+
+  <!-- Content -->
+  <main class="content">
+
+    <!-- ESG Score Banner -->
+    <div class="score-banner">
+      <div class="score-main">
+        <div class="score-label">Overall ESG Score</div>
+        <div class="score-value">82.4<span>/100</span></div>
+        <div class="score-change">
+          <span class="change-badge">
+            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
+            +4.2 pts
+          </span>
+          <span class="score-sub">vs. Q4 2025 &middot; Industry avg 71.0</span>
+        </div>
+      </div>
+
+      <div class="score-divider"></div>
+
+      <div class="score-pillar">
+        <div class="pillar-label">Environmental</div>
+        <div class="pillar-ring">
+          <svg viewBox="0 0 64 64">
+            <circle class="track" cx="32" cy="32" r="26"/>
+            <circle class="fill" cx="32" cy="32" r="26"
+              stroke="#6FCF97"
+              stroke-dasharray="163.36"
+              stroke-dashoffset="29.4"/>
+          </svg>
+          <div class="pillar-num">82</div>
+        </div>
+        <div class="pillar-name">Environmental</div>
+      </div>
+
+      <div class="score-divider"></div>
+
+      <div class="score-pillar">
+        <div class="pillar-label">Social</div>
+        <div class="pillar-ring">
+          <svg viewBox="0 0 64 64">
+            <circle class="track" cx="32" cy="32" r="26"/>
+            <circle class="fill" cx="32" cy="32" r="26"
+              stroke="#56CCF2"
+              stroke-dasharray="163.36"
+              stroke-dashoffset="40.84"/>
+          </svg>
+          <div class="pillar-num">75</div>
+        </div>
+        <div class="pillar-name">Social</div>
+      </div>
+
+      <div class="score-divider"></div>
+
+      <div class="score-pillar">
+        <div class="pillar-label">Governance</div>
+        <div class="pillar-ring">
+          <svg viewBox="0 0 64 64">
+            <circle class="track" cx="32" cy="32" r="26"/>
+            <circle class="fill" cx="32" cy="32" r="26"
+              stroke="#F2C94C"
+              stroke-dasharray="163.36"
+              stroke-dashoffset="14.7"/>
+          </svg>
+          <div class="pillar-num">91</div>
+        </div>
+        <div class="pillar-name">Governance</div>
+      </div>
+    </div>
+
+    <!-- KPI Cards -->
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-top">
+          <div class="kpi-icon green">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20A10 10 0 0012 2zm0 0c-1.5 5-1.5 15 0 20m0-20C13.5 7 13.5 17 12 22M2 12h20"/></svg>
+          </div>
+          <div class="kpi-trend up">
+            <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
+            12.3%
+          </div>
+        </div>
+        <div>
+          <div class="kpi-value">18,240<small>tCO&#8322;e</small></div>
+          <div class="kpi-label">Carbon Footprint</div>
+          <div class="kpi-sub">&#8595; 2,420 tCO&#8322;e vs Q4 2025</div>
+        </div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-top">
+          <div class="kpi-icon brown">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          </div>
+          <div class="kpi-trend up">
+            <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
+            8.1%
+          </div>
+        </div>
+        <div>
+          <div class="kpi-value">67<small>%</small></div>
+          <div class="kpi-label">Renewable Energy</div>
+          <div class="kpi-sub">Target: 80% by Dec 2026</div>
+        </div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-top">
+          <div class="kpi-icon blue">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+          </div>
+          <div class="kpi-trend up">
+            <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
+            5.4%
+          </div>
+        </div>
+        <div>
+          <div class="kpi-value">3,847</div>
+          <div class="kpi-label">Employees Trained</div>
+          <div class="kpi-sub">Across 14 client organizations</div>
+        </div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-top">
+          <div class="kpi-icon amber">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+          </div>
+          <div class="kpi-trend up">
+            <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
+            22.7%
+          </div>
+        </div>
+        <div>
+          <div class="kpi-value">$4.2<small>M</small></div>
+          <div class="kpi-label">ESG Value Created</div>
+          <div class="kpi-sub">Client cost savings this quarter</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="charts-row">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">ESG Score Trend</div>
+            <div class="card-sub">12-month rolling performance</div>
+          </div>
+          <div class="card-actions">
+            <button class="pill-tab">E</button>
+            <button class="pill-tab">S</button>
+            <button class="pill-tab">G</button>
+            <button class="pill-tab active">All</button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="chart-wrap" style="height:220px;">
+            <canvas id="trendChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Portfolio Mix</div>
+            <div class="card-sub">Active projects by pillar</div>
+          </div>
+        </div>
+        <div class="card-body" style="display:flex;flex-direction:column;align-items:center;gap:16px;">
+          <div class="chart-wrap" style="height:160px;width:160px;">
+            <canvas id="donutChart"></canvas>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px;width:100%;">
+            <div style="display:flex;align-items:center;justify-content:space-between;font-size:13px;">
+              <span style="display:flex;align-items:center;gap:8px;color:var(--text-secondary);"><span style="width:10px;height:10px;border-radius:3px;background:#3A7D44;display:inline-block;"></span>Environmental</span>
+              <strong>42%</strong>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;font-size:13px;">
+              <span style="display:flex;align-items:center;gap:8px;color:var(--text-secondary);"><span style="width:10px;height:10px;border-radius:3px;background:#2B6CB0;display:inline-block;"></span>Social</span>
+              <strong>31%</strong>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;font-size:13px;">
+              <span style="display:flex;align-items:center;gap:8px;color:var(--text-secondary);"><span style="width:10px;height:10px;border-radius:3px;background:#9B6B45;display:inline-block;"></span>Governance</span>
+              <strong>27%</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Row -->
+    <div class="bottom-row">
+
+      <div class="card">
+        <div class="card-header" style="padding-bottom:16px;">
+          <div>
+            <div class="card-title">Active Projects</div>
+            <div class="card-sub">8 projects across 6 clients</div>
+          </div>
+          <button class="pill-tab">View all</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Project</th>
+                <th>Status</th>
+                <th>Progress</th>
+                <th>Score</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <div class="proj-name">Net Zero Roadmap</div>
+                  <div class="proj-client">Meridian Holdings</div>
+                </td>
+                <td><span class="status-pill active">Active</span></td>
+                <td>
+                  <div class="progress-bar-wrap">
+                    <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:72%;"></div></div>
+                    <div style="font-size:11px;color:var(--text-muted);margin-top:3px;">72%</div>
+                  </div>
+                </td>
+                <td><strong style="color:var(--green);">86</strong></td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="proj-name">Supply Chain Audit</div>
+                  <div class="proj-client">Atlas Retail Group</div>
+                </td>
+                <td><span class="status-pill review">Review</span></td>
+                <td>
+                  <div class="progress-bar-wrap">
+                    <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:90%;"></div></div>
+                    <div style="font-size:11px;color:var(--text-muted);margin-top:3px;">90%</div>
+                  </div>
+                </td>
+                <td><strong style="color:var(--green);">79</strong></td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="proj-name">DEI Framework</div>
+                  <div class="proj-client">Crest Financial</div>
+                </td>
+                <td><span class="status-pill active">Active</span></td>
+                <td>
+                  <div class="progress-bar-wrap">
+                    <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:45%;"></div></div>
+                    <div style="font-size:11px;color:var(--text-muted);margin-top:3px;">45%</div>
+                  </div>
+                </td>
+                <td><strong style="color:var(--amber);">71</strong></td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="proj-name">Board Governance</div>
+                  <div class="proj-client">Pinnacle Energy</div>
+                </td>
+                <td><span class="status-pill complete">Complete</span></td>
+                <td>
+                  <div class="progress-bar-wrap">
+                    <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:100%;background:var(--brown-400)"></div></div>
+                    <div style="font-size:11px;color:var(--text-muted);margin-top:3px;">100%</div>
+                  </div>
+                </td>
+                <td><strong style="color:var(--green);">93</strong></td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="proj-name">Carbon Credits</div>
+                  <div class="proj-client">Solara Tech</div>
+                </td>
+                <td><span class="status-pill planned">Planned</span></td>
+                <td>
+                  <div class="progress-bar-wrap">
+                    <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:8%;"></div></div>
+                    <div style="font-size:11px;color:var(--text-muted);margin-top:3px;">8%</div>
+                  </div>
+                </td>
+                <td><strong style="color:var(--text-muted);">&mdash;</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header" style="padding-bottom:20px;">
+          <div>
+            <div class="card-title">2026 ESG Goals</div>
+            <div class="card-sub">Progress toward annual targets</div>
+          </div>
+          <button class="pill-tab">Details</button>
+        </div>
+        <div class="card-body">
+          <div class="goals-list">
+            <div class="goal-item">
+              <div class="goal-top">
+                <span class="goal-name">Carbon Neutrality</span>
+                <span class="goal-pct">67%</span>
+              </div>
+              <div class="goal-bar-bg"><div class="goal-bar-fill" style="width:67%;background:var(--green);"></div></div>
+              <div class="goal-meta">18,240 tCO&#8322;e remaining &middot; Target: Q4 2026</div>
+            </div>
+
+            <div class="goal-item">
+              <div class="goal-top">
+                <span class="goal-name">Renewable Energy 80%</span>
+                <span class="goal-pct">84%</span>
+              </div>
+              <div class="goal-bar-bg"><div class="goal-bar-fill" style="width:84%;background:var(--brown-500);"></div></div>
+              <div class="goal-meta">67% current &middot; On track for Dec 2026</div>
+            </div>
+
+            <div class="goal-item">
+              <div class="goal-top">
+                <span class="goal-name">Gender Pay Equity</span>
+                <span class="goal-pct">92%</span>
+              </div>
+              <div class="goal-bar-bg"><div class="goal-bar-fill" style="width:92%;background:var(--blue);"></div></div>
+              <div class="goal-meta">3.2% gap remaining &middot; Target: 0% by Jun 2026</div>
+            </div>
+
+            <div class="goal-item">
+              <div class="goal-top">
+                <span class="goal-name">Board Diversity 40%</span>
+                <span class="goal-pct">75%</span>
+              </div>
+              <div class="goal-bar-bg"><div class="goal-bar-fill" style="width:75%;background:var(--amber);"></div></div>
+              <div class="goal-meta">30% achieved &middot; Target: 40% by Sep 2026</div>
+            </div>
+
+            <div class="goal-item">
+              <div class="goal-top">
+                <span class="goal-name">Zero Waste to Landfill</span>
+                <span class="goal-pct">51%</span>
+              </div>
+              <div class="goal-bar-bg"><div class="goal-bar-fill" style="width:51%;background:var(--brown-400);"></div></div>
+              <div class="goal-meta">49% diversion rate &middot; Target: 100% by Dec 2026</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<script>
+  // Trend Line Chart
+  const trendCtx = document.getElementById('trendChart').getContext('2d');
+  const months = ['Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar'];
+
+  const makeGrad = (ctx, hex) => {
+    const g = ctx.createLinearGradient(0,0,0,220);
+    g.addColorStop(0, hex + '30');
+    g.addColorStop(1, hex + '00');
+    return g;
+  };
+
+  new Chart(trendCtx, {
+    type: 'line',
+    data: {
+      labels: months,
+      datasets: [
+        {
+          label: 'Overall',
+          data: [70,71,72,73,75,74,76,77,78,79,81,82.4],
+          borderColor: '#9B6B45',
+          backgroundColor: makeGrad(trendCtx, '#9B6B45'),
+          borderWidth: 2.5,
+          pointRadius: 3,
+          pointHoverRadius: 5,
+          pointBackgroundColor: '#9B6B45',
+          tension: 0.4,
+          fill: true,
+        },
+        {
+          label: 'Environmental',
+          data: [71,73,74,76,77,76,78,79,80,80,81,82],
+          borderColor: '#3A7D44',
+          backgroundColor: 'transparent',
+          borderWidth: 1.5,
+          borderDash: [4,3],
+          pointRadius: 2,
+          tension: 0.4,
+        },
+        {
+          label: 'Social',
+          data: [65,66,67,67,69,68,70,71,72,73,74,75],
+          borderColor: '#2B6CB0',
+          backgroundColor: 'transparent',
+          borderWidth: 1.5,
+          borderDash: [4,3],
+          pointRadius: 2,
+          tension: 0.4,
+        },
+        {
+          label: 'Governance',
+          data: [82,83,84,85,86,86,87,88,89,89,90,91],
+          borderColor: '#B7791F',
+          backgroundColor: 'transparent',
+          borderWidth: 1.5,
+          borderDash: [4,3],
+          pointRadius: 2,
+          tension: 0.4,
+        },
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#2C1A0E',
+          titleColor: '#E8D1B3',
+          bodyColor: '#E8D1B3',
+          borderColor: '#5C3D28',
+          borderWidth: 1,
+          padding: 10,
+          cornerRadius: 8,
+        }
+      },
+      scales: {
+        x: {
+          grid: { display: false },
+          ticks: { color: '#B98A62', font: { size: 11 } },
+          border: { display: false }
+        },
+        y: {
+          min: 60, max: 100,
+          grid: { color: '#F5EBD9' },
+          ticks: { color: '#B98A62', font: { size: 11 }, stepSize: 10 },
+          border: { display: false }
+        }
+      }
+    }
+  });
+
+  // Doughnut Chart
+  const donutCtx = document.getElementById('donutChart').getContext('2d');
+  new Chart(donutCtx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Environmental', 'Social', 'Governance'],
+      datasets: [{
+        data: [42, 31, 27],
+        backgroundColor: ['#3A7D44', '#2B6CB0', '#9B6B45'],
+        borderWidth: 0,
+        hoverOffset: 4,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: '72%',
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#2C1A0E',
+          titleColor: '#E8D1B3',
+          bodyColor: '#E8D1B3',
+          borderColor: '#5C3D28',
+          borderWidth: 1,
+          padding: 10,
+          cornerRadius: 8,
+        }
+      }
+    }
+  });
+</script>
+</body>
+</html>
