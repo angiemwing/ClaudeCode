@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hale Health — Brand Identity Case Study</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --espresso: #492617;
+    --terracotta: #AC6943;
+    --blush: #D3B5A1;
+    --sky: #D1E7FD;
+    --bg-default: #FAF6F4;
+    --bg-subtle: #F4ECE8;
+    --surface: #FFFFFF;
+    --border: #E4D2C7;
+    --text-primary: #492617;
+    --text-secondary: #6E3C28;
+    --text-muted: #96573C;
+    --accent-data: #0A2C7F;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg-default);
+    color: var(--text-primary);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* === HERO === */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 64px;
+    position: relative;
+    overflow: hidden;
+    background: var(--espresso);
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background:
+      radial-gradient(ellipse at 20% 80%, rgba(172,105,67,0.3) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 20%, rgba(209,231,253,0.1) 0%, transparent 50%);
+    z-index: 1;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 900px;
+  }
+
+  .hero-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--terracotta);
+    margin-bottom: 24px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.3s;
+  }
+
+  .hero h1 {
+    font-family: 'Lora', serif;
+    font-size: clamp(48px, 7vw, 96px);
+    font-weight: 700;
+    color: var(--blush);
+    line-height: 1.05;
+    margin-bottom: 24px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.5s;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: var(--terracotta);
+  }
+
+  .hero-sub {
+    font-family: 'Inter', sans-serif;
+    font-size: 18px;
+    font-weight: 300;
+    color: var(--blush);
+    opacity: 0.7;
+    max-width: 600px;
+    line-height: 1.7;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.7s;
+  }
+
+  .hero-meta {
+    margin-top: 48px;
+    display: flex;
+    gap: 48px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.9s;
+  }
+
+  .hero-meta-item {
+    border-left: 1px solid rgba(172,105,67,0.4);
+    padding-left: 16px;
+  }
+
+  .hero-meta-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--terracotta);
+    margin-bottom: 4px;
+  }
+
+  .hero-meta-value {
+    font-family: 'Lora', serif;
+    font-size: 16px;
+    color: var(--blush);
+  }
+
+  /* === SECTIONS === */
+  .section {
+    padding: 96px 64px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-dark {
+    background: var(--espresso);
+    max-width: 100%;
+    padding: 96px 64px;
+  }
+
+  .section-dark .section-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-accent {
+    background: var(--bg-subtle);
+    max-width: 100%;
+    padding: 96px 64px;
+  }
+
+  .section-accent .section-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--terracotta);
+    margin-bottom: 16px;
+  }
+
+  .section-dark .section-label {
+    color: var(--terracotta);
+  }
+
+  .section-title {
+    font-family: 'Lora', serif;
+    font-size: clamp(32px, 4vw, 48px);
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.15;
+    margin-bottom: 40px;
+    max-width: 700px;
+  }
+
+  .section-dark .section-title {
+    color: var(--blush);
+  }
+
+  .body-text {
+    font-size: 16px;
+    font-weight: 400;
+    color: var(--text-secondary);
+    line-height: 1.8;
+    max-width: 660px;
+    margin-bottom: 24px;
+  }
+
+  .section-dark .body-text {
+    color: var(--blush);
+    opacity: 0.8;
+  }
+
+  .body-text strong {
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .section-dark .body-text strong {
+    color: var(--blush);
+    opacity: 1;
+  }
+
+  /* === STAT CARDS === */
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 24px;
+    margin: 48px 0;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 32px;
+  }
+
+  .section-dark .stat-card {
+    background: rgba(172,105,67,0.1);
+    border-color: rgba(172,105,67,0.2);
+  }
+
+  .stat-value {
+    font-family: 'Lora', serif;
+    font-size: 40px;
+    font-weight: 700;
+    color: var(--terracotta);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .stat-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-muted);
+  }
+
+  .section-dark .stat-label {
+    color: var(--blush);
+    opacity: 0.6;
+  }
+
+  /* === THEME CARDS === */
+  .theme-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin: 48px 0;
+  }
+
+  .theme-card {
+    padding: 32px;
+    border-left: 3px solid var(--terracotta);
+    background: var(--surface);
+    border-radius: 0 8px 8px 0;
+  }
+
+  .theme-card h4 {
+    font-family: 'Lora', serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+  }
+
+  .theme-card p {
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  /* === VALUES === */
+  .values-row {
+    display: flex;
+    gap: 32px;
+    margin: 48px 0;
+    flex-wrap: wrap;
+  }
+
+  .value-item {
+    flex: 1;
+    min-width: 160px;
+    text-align: center;
+    padding: 32px 16px;
+  }
+
+  .value-word {
+    font-family: 'Lora', serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--blush);
+    margin-bottom: 8px;
+  }
+
+  .value-desc {
+    font-size: 13px;
+    color: var(--blush);
+    opacity: 0.6;
+    line-height: 1.5;
+  }
+
+  /* === COLOR SWATCHES === */
+  .swatch-row {
+    display: flex;
+    gap: 16px;
+    margin: 32px 0;
+    flex-wrap: wrap;
+  }
+
+  .swatch {
+    width: 120px;
+  }
+
+  .swatch-color {
+    width: 120px;
+    height: 80px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    border: 1px solid var(--border);
+  }
+
+  .swatch-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .swatch-hex {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-family: monospace;
+  }
+
+  /* === FONT SPECIMEN === */
+  .font-specimen {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 48px;
+    margin: 32px 0;
+  }
+
+  .font-specimen-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--terracotta);
+    margin-bottom: 16px;
+  }
+
+  .font-specimen-display {
+    font-family: 'Lora', serif;
+    font-size: 48px;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+
+  .font-specimen-body {
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    color: var(--text-secondary);
+    line-height: 1.8;
+    max-width: 600px;
+  }
+
+  /* === BRAND IS/ISNT === */
+  .brand-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    margin: 48px 0;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .brand-col {
+    padding: 48px;
+  }
+
+  .brand-col-is {
+    background: var(--surface);
+    border: 1px solid var(--border);
+  }
+
+  .brand-col-isnt {
+    background: var(--bg-subtle);
+    border: 1px solid var(--border);
+    border-left: none;
+  }
+
+  .brand-col h4 {
+    font-family: 'Lora', serif;
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: var(--text-primary);
+  }
+
+  .brand-col ul {
+    list-style: none;
+  }
+
+  .brand-col li {
+    font-size: 15px;
+    color: var(--text-secondary);
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .brand-col li:last-child {
+    border-bottom: none;
+  }
+
+  /* === PERSONA CARDS === */
+  .persona-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin: 48px 0;
+  }
+
+  .persona-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 32px;
+  }
+
+  .persona-name {
+    font-family: 'Lora', serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+  }
+
+  .persona-role {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--terracotta);
+    margin-bottom: 16px;
+  }
+
+  .persona-desc {
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  /* === MESSAGING === */
+  .message-primary {
+    font-family: 'Lora', serif;
+    font-size: clamp(28px, 3.5vw, 42px);
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.25;
+    max-width: 700px;
+    margin: 32px 0;
+    padding-left: 24px;
+    border-left: 3px solid var(--terracotta);
+  }
+
+  /* === WORD LIST === */
+  .word-list {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin: 16px 0 32px;
+  }
+
+  .word-tag {
+    font-size: 13px;
+    font-weight: 500;
+    padding: 6px 16px;
+    border-radius: 100px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+  }
+
+  .word-tag.avoid {
+    background: var(--bg-subtle);
+    color: var(--text-muted);
+    text-decoration: line-through;
+    opacity: 0.6;
+  }
+
+  /* === DIVIDER === */
+  .divider {
+    width: 48px;
+    height: 2px;
+    background: var(--terracotta);
+    margin: 48px 0;
+  }
+
+  /* === FOOTER === */
+  .footer {
+    padding: 64px;
+    text-align: center;
+    background: var(--espresso);
+  }
+
+  .footer p {
+    font-size: 13px;
+    color: var(--blush);
+    opacity: 0.5;
+  }
+
+  .footer .footer-name {
+    font-family: 'Lora', serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--blush);
+    opacity: 0.8;
+    margin-bottom: 8px;
+  }
+
+  /* === ANIMATIONS === */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* === RESPONSIVE === */
+  @media (max-width: 768px) {
+    .hero, .section, .section-dark, .section-accent { padding: 48px 32px; }
+    .theme-grid, .brand-grid, .persona-grid { grid-template-columns: 1fr; }
+    .hero-meta { flex-direction: column; gap: 24px; }
+    .brand-col-isnt { border-left: 1px solid var(--border); border-top: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-label">Personal Project — Data Analytics in Healthcare</div>
+    <h1>Hale <em>Health</em></h1>
+    <p class="hero-sub">A brand identity built from real healthcare data — designed to unify a fictional four-state hospital system and prove that analytics and design are not separate disciplines.</p>
+    <div class="hero-meta">
+      <div class="hero-meta-item">
+        <div class="hero-meta-label">Role</div>
+        <div class="hero-meta-value">Sole Designer</div>
+      </div>
+      <div class="hero-meta-item">
+        <div class="hero-meta-label">Tools</div>
+        <div class="hero-meta-value">Figma, Claude Code, Tableau</div>
+      </div>
+      <div class="hero-meta-item">
+        <div class="hero-meta-label">Scope</div>
+        <div class="hero-meta-value">Research → Strategy → Identity → Data Viz</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECT FOUNDATION -->
+<section class="section">
+  <div class="section-label">01 — Project Foundation</div>
+  <h2 class="section-title">What if course data had a brand system?</h2>
+  <p class="body-text">This project started with a question: what if the three healthcare datasets from my Data Analytics course belonged to one fictional organization — and that organization had a visual identity that carried through every chart, dashboard, and presentation?</p>
+  <p class="body-text"><strong>Hale Health</strong> is a multi-state regional hospital system across Arizona, New Mexico, Utah, and Colorado. Four service lines, ~100K patient encounters annually, ~1,700 staff. Built through acquisition, operating under separate legacy identities — until now.</p>
+
+  <div class="stat-grid">
+    <div class="stat-card">
+      <div class="stat-value">97K</div>
+      <div class="stat-label">Patient encounters annually</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">1,676</div>
+      <div class="stat-label">Employees in workforce dataset</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">2,768</div>
+      <div class="stat-label">Patients in diabetes panel</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">4</div>
+      <div class="stat-label">States in the system</div>
+    </div>
+  </div>
+</section>
+
+<!-- DISCOVERY -->
+<section class="section-dark">
+  <div class="section-inner">
+    <div class="section-label">02 — Discovery & Data</div>
+    <h2 class="section-title">The brand strategy was extracted from real data, not invented.</h2>
+
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-value">29%</div>
+        <div class="stat-label">Attrition rate for overtime staff</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">13%</div>
+        <div class="stat-label">Nurse attrition — half the workforce</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">3.7 yr</div>
+        <div class="stat-label">Average tenure of leavers</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">34%</div>
+        <div class="stat-label">Patients screening positive for diabetes</div>
+      </div>
+    </div>
+
+    <div class="theme-grid">
+      <div class="theme-card">
+        <h4>Fragmented identity</h4>
+        <p>No unifying story across facilities or states.</p>
+      </div>
+      <div class="theme-card">
+        <h4>Burnout-driven attrition</h4>
+        <p>A workload crisis concentrated among early-career clinical staff.</p>
+      </div>
+      <div class="theme-card">
+        <h4>Clinical depth without a voice</h4>
+        <p>Sophisticated work the brand didn't reflect.</p>
+      </div>
+      <div class="theme-card">
+        <h4>Multi-state tension</h4>
+        <p>Outlying facilities felt like afterthoughts.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MARKET -->
+<section class="section">
+  <div class="section-label">03 — Market Context</div>
+  <h2 class="section-title">The Four Corners: one of the most underserved regions in the country.</h2>
+  <p class="body-text">Rural, culturally diverse — Native American, Hispanic, Anglo — with diabetes prevalence exceeding 20% among Native American adults. 30 physicians per 100K in rural areas versus 263 urban. 96% of New Mexico's rural counties face primary care shortages.</p>
+  <p class="body-text">The brand had to communicate stability and rootedness. And the data visualizations informing leadership decisions had to look like they belonged to that same identity.</p>
+</section>
+
+<!-- COMPETITIVE -->
+<section class="section-accent">
+  <div class="section-inner">
+    <div class="section-label">04 — Competitive Analysis</div>
+    <h2 class="section-title">Blues, greens, whites. Stock photography. Generic messaging.</h2>
+    <p class="body-text">San Juan Regional, CommonSpirit/Mercy Durango, Banner Health, IHS/Navajo Area — every competitor defaults to the same clinical palette and safe visual language. Nobody owns the intersection of warmth, clinical depth, and cultural specificity.</p>
+    <p class="body-text"><strong>That's the gap Hale Health fills.</strong> Grounded in place, modern in execution, built for the long haul.</p>
+  </div>
+</section>
+
+<!-- AUDIENCES -->
+<section class="section">
+  <div class="section-label">05 — Audiences</div>
+  <h2 class="section-title">Three people the brand has to reach.</h2>
+
+  <div class="persona-grid">
+    <div class="persona-card">
+      <div class="persona-name">Maria, 52</div>
+      <div class="persona-role">Patient — Rural NM</div>
+      <div class="persona-desc">Diabetic, drives 45 minutes for care. Needs continuity, cultural sensitivity, and a system that sees her long-term health — not just her next appointment.</div>
+    </div>
+    <div class="persona-card">
+      <div class="persona-name">Jake, 29</div>
+      <div class="persona-role">ICU Nurse — 2 Years In</div>
+      <div class="persona-desc">Burning out on mandatory overtime. Considering leaving. Needs to see the organization invest in its people, not just recruit them.</div>
+    </div>
+    <div class="persona-card">
+      <div class="persona-name">Dr. Reyes</div>
+      <div class="persona-role">Referring Physician — CO</div>
+      <div class="persona-desc">Family medicine in a small town. Needs to trust clinical outcomes through clear, professional data communication.</div>
+    </div>
+  </div>
+</section>
+
+<!-- BRAND STRATEGY -->
+<section class="section-dark">
+  <div class="section-inner">
+    <div class="section-label">06 — Brand Strategy</div>
+    <h2 class="section-title">Steady, lasting healthcare for the Four Corners.</h2>
+    <p class="body-text">Clinical depth with genuine community rootedness — the continuity national chains can't offer, with the scale standalone facilities can't match.</p>
+
+    <div class="values-row">
+      <div class="value-item">
+        <div class="value-word">Rooted</div>
+        <div class="value-desc">Built from the ground of this region</div>
+      </div>
+      <div class="value-item">
+        <div class="value-word">Steady</div>
+        <div class="value-desc">A long relationship, not a single visit</div>
+      </div>
+      <div class="value-item">
+        <div class="value-word">Honest</div>
+        <div class="value-desc">Clear, transparent, owns what needs work</div>
+      </div>
+      <div class="value-item">
+        <div class="value-word">Connected</div>
+        <div class="value-desc">Four states, one system</div>
+      </div>
+      <div class="value-item">
+        <div class="value-word">Human</div>
+        <div class="value-desc">People taking care of people</div>
+      </div>
+    </div>
+
+    <div class="brand-grid">
+      <div class="brand-col brand-col-is">
+        <h4>Brand is</h4>
+        <ul>
+          <li>Steady</li>
+          <li>Grounded</li>
+          <li>Human</li>
+          <li>Connected</li>
+          <li>Modern</li>
+          <li>Honest</li>
+        </ul>
+      </div>
+      <div class="brand-col brand-col-isnt">
+        <h4>Brand is not</h4>
+        <ul>
+          <li>Slick</li>
+          <li>Corporate</li>
+          <li>Generic</li>
+          <li>Loud</li>
+          <li>Trendy</li>
+          <li>Cold</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MESSAGING -->
+<section class="section">
+  <div class="section-label">07 — Messaging</div>
+  <h2 class="section-title">Voice & tone</h2>
+
+  <div class="message-primary">Healthcare as grounded as the communities it serves.</div>
+
+  <p class="body-text">Warm but direct. Plain language over jargon. A trusted neighbor who knows medicine — not a billboard, not a brochure.</p>
+
+  <div class="divider"></div>
+
+  <p class="body-text"><strong>We say:</strong></p>
+  <div class="word-list">
+    <span class="word-tag">care</span>
+    <span class="word-tag">partner</span>
+    <span class="word-tag">community</span>
+    <span class="word-tag">connected</span>
+    <span class="word-tag">steady</span>
+    <span class="word-tag">long-term</span>
+    <span class="word-tag">together</span>
+    <span class="word-tag">real</span>
+  </div>
+
+  <p class="body-text"><strong>We don't say:</strong></p>
+  <div class="word-list">
+    <span class="word-tag avoid">world-class</span>
+    <span class="word-tag avoid">cutting-edge</span>
+    <span class="word-tag avoid">compassionate care</span>
+    <span class="word-tag avoid">synergy</span>
+    <span class="word-tag avoid">innovative solutions</span>
+  </div>
+</section>
+
+<!-- VISUAL DIRECTION -->
+<section class="section-accent">
+  <div class="section-inner">
+    <div class="section-label">08 — Visual Direction</div>
+    <h2 class="section-title">Espresso, Terracotta, Blush, Sky.</h2>
+    <p class="body-text">A four-color brand core extended into full light/dark semantic tokens, plus purpose-built data visualization scales — categorical, sequential, diverging, and signal. Every color has a job.</p>
+
+    <div class="swatch-row">
+      <div class="swatch">
+        <div class="swatch-color" style="background: #492617;"></div>
+        <div class="swatch-name">Espresso</div>
+        <div class="swatch-hex">#492617</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background: #AC6943;"></div>
+        <div class="swatch-name">Terracotta</div>
+        <div class="swatch-hex">#AC6943</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background: #D3B5A1;"></div>
+        <div class="swatch-name">Blush</div>
+        <div class="swatch-hex">#D3B5A1</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background: #D1E7FD;"></div>
+        <div class="swatch-name">Sky</div>
+        <div class="swatch-hex">#D1E7FD</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background: #0A2C7F;"></div>
+        <div class="swatch-name">Data Accent</div>
+        <div class="swatch-hex">#0A2C7F</div>
+      </div>
+    </div>
+
+    <div class="font-specimen">
+      <div class="font-specimen-label">Display — Lora</div>
+      <div class="font-specimen-display">Hale Health</div>
+      <div style="height: 24px;"></div>
+      <div class="font-specimen-label">Body — Inter</div>
+      <div class="font-specimen-body">Connected, whole-person care across Arizona, New Mexico, Utah, and Colorado — built around the communities we serve and the people who make it possible.</div>
+    </div>
+  </div>
+</section>
+
+<!-- NAMING -->
+<section class="section">
+  <div class="section-label">09 — Naming</div>
+  <h2 class="section-title">Hale: healthy, whole, sound.</h2>
+  <p class="body-text">From Old English. It sounds like "heal" without being literal. Against the brown and blue palette, it reads as sturdy and approachable — a name that belongs on a building you'd trust.</p>
+  <p class="body-text">Branded house model: Hale Health — Farmington, Hale Health — Durango. One system, one name, one identity across four states.</p>
+</section>
+
+<!-- HOW BRAND EXTENDS TO DATA -->
+<section class="section-dark">
+  <div class="section-inner">
+    <div class="section-label">10 — How the Brand Extends to Data</div>
+    <h2 class="section-title">This is the core of the project.</h2>
+    <p class="body-text">The brand isn't just a logo — it's a system that governs how data is presented and how narratives are told.</p>
+    <p class="body-text"><strong>Data visualizations</strong> — every chart uses Hale Health's color system, typography, and layout standards. Attrition, patient outcomes, length of stay, regression analyses — all branded consistently.</p>
+    <p class="body-text"><strong>Data narratives</strong> — the brand voice carries into findings. Direct, human, jargon-free. Data tells a story about real people, not abstract metrics.</p>
+    <p class="body-text"><strong>Presentation storytelling</strong> — a deck for the CMO about resource utilization looks like it came from the same organization as a patient-facing brochure.</p>
+  </div>
+</section>
+
+<!-- STRATEGY BRIEF -->
+<section class="section">
+  <div class="section-label">11 — Strategy Brief</div>
+  <h2 class="section-title">The brief in three lines.</h2>
+  <p class="body-text">Design a brand that feels like the earth it's built on — warm, steady, honest. Espresso, Terracotta, Blush, and Sky. Lora and Inter. Direct and human.</p>
+  <p class="body-text">Then extend that brand into every data visualization, dashboard, and presentation the organization produces — proving that analytics and design are not separate disciplines.</p>
+</section>
+
+<!-- FOOTER -->
+<section class="footer">
+  <div class="footer-name">Angie Wing — Senior Brand Designer</div>
+  <p>Personal project built with Figma, Claude Code, and Tableau</p>
+</section>
+
+</body>
+</html>
