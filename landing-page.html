@@ -33,18 +33,20 @@
       z-index: 10;
       background: var(--espresso);
       height: 72px;
-      padding: 0 64px;
-      display: flex;
+      padding: 0 48px;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
       align-items: center;
-      justify-content: space-between;
+      gap: 32px;
     }
 
     .nav-logo {
       display: flex;
       align-items: center;
-      gap: 11px;
+      gap: 10px;
       text-decoration: none;
       flex-shrink: 0;
+      white-space: nowrap;
     }
 
     .nav-mark {
@@ -65,7 +67,8 @@
     .nav-links {
       display: flex;
       align-items: center;
-      gap: 36px;
+      justify-content: center;
+      gap: 28px;
       list-style: none;
     }
 
