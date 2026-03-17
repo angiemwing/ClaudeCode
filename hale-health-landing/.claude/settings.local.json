@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__Claude_Preview__preview_start",
+      "Bash(gh pr:*)",
+      "Bash(where gh:*)",
+      "Read(//c/Program Files/**)",
+      "Bash(mkdir -p \"C:\\\\Users\\\\angie\\\\Documents\\\\GitHub\\\\ClaudeCode\\\\hale-health-landing\")",
+      "Bash(cp \"C:\\\\Users\\\\angie\\\\Documents\\\\GitHub\\\\ClaudeCode\\\\healthcare-dashboard\\\\.claude\\\\worktrees\\\\crazy-bouman\\\\landing-page.html\" \"C:\\\\Users\\\\angie\\\\Documents\\\\GitHub\\\\ClaudeCode\\\\hale-health-landing\\\\index.html\")",
+      "Bash(cp -r \"C:\\\\Users\\\\angie\\\\Documents\\\\GitHub\\\\ClaudeCode\\\\healthcare-dashboard\\\\.claude\\\\worktrees\\\\crazy-bouman\\\\.claude\" \"C:\\\\Users\\\\angie\\\\Documents\\\\GitHub\\\\ClaudeCode\\\\hale-health-landing/.claude\")"
+    ]
+  }
+}
