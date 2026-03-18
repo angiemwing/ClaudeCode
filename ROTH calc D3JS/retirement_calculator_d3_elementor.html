@@ -1,0 +1,526 @@
+<div id="rc2-widget">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  
+  <style>
+    #rc2-widget *, #rc2-widget *::before, #rc2-widget *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+  
+    #rc2-widget {
+      font-family: "Inter", sans-serif;
+      background: transparent;
+      padding: 24px;
+      max-width: 720px;
+      line-height: 1.5;
+      color: #1a1a18;
+    }
+  
+    @media (prefers-color-scheme: dark) {
+      #rc2-widget { color: #e8e6e0; }
+    }
+  
+    #rc2-widget h1 {
+      font-size: 40px;
+      font-weight: 500;
+      margin-bottom: 4px;
+      color: inherit;
+    }
+  
+    #rc2-widget .rc2-subtitle {
+      font-size: 13px;
+      color: #6b6a65;
+      margin-bottom: 24px;
+    }
+  
+    #rc2-widget .rc2-slider-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+  
+    #rc2-widget .rc2-label {
+      font-size: 13px;
+      color: #6b6a65;
+      min-width: 130px;
+    }
+  
+    #rc2-widget input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      flex: 1;
+      height: 4px;
+      background: #eeedea;
+      border-radius: 2px;
+      outline: none;
+      cursor: pointer;
+      border: none;
+      box-shadow: none;
+    }
+  
+    #rc2-widget input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #1a1a18;
+      cursor: pointer;
+      border: none;
+    }
+  
+    #rc2-widget input[type="range"]::-moz-range-thumb {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #1a1a18;
+      cursor: pointer;
+      border: none;
+    }
+  
+    #rc2-widget #rc2-roth::-webkit-slider-thumb { background: #C8E044; }
+    #rc2-widget #rc2-roth::-moz-range-thumb     { background: #C8E044; }
+    #rc2-widget #rc2-hsa::-webkit-slider-thumb  { background: #7A8C3A; }
+    #rc2-widget #rc2-hsa::-moz-range-thumb      { background: #7A8C3A; }
+  
+    @media (prefers-color-scheme: dark) {
+      #rc2-widget input[type="range"] { background: #323230; }
+      #rc2-widget input[type="range"]::-webkit-slider-thumb { background: #e8e6e0; }
+      #rc2-widget input[type="range"]::-moz-range-thumb     { background: #e8e6e0; }
+      #rc2-widget #rc2-roth::-webkit-slider-thumb { background: #C8E044; }
+      #rc2-widget #rc2-roth::-moz-range-thumb     { background: #C8E044; }
+      #rc2-widget #rc2-hsa::-webkit-slider-thumb  { background: #7A8C3A; }
+      #rc2-widget #rc2-hsa::-moz-range-thumb      { background: #7A8C3A; }
+    }
+  
+    #rc2-widget .rc2-val {
+      font-size: 13px;
+      font-weight: 500;
+      color: #1a1a18;
+      min-width: 64px;
+      text-align: right;
+    }
+  
+    @media (prefers-color-scheme: dark) {
+      #rc2-widget .rc2-val { color: #e8e6e0; }
+    }
+  
+    #rc2-widget .rc2-stat-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+  
+    #rc2-widget .rc2-stat {
+      background: #f5f4f0;
+      border-radius: 8px;
+      padding: 14px 16px;
+    }
+  
+    @media (prefers-color-scheme: dark) {
+      #rc2-widget .rc2-stat { background: #2a2a28; }
+    }
+  
+    #rc2-widget .rc2-stat-label {
+      font-size: 11px;
+      color: #6b6a65;
+      margin-bottom: 6px;
+    }
+  
+    #rc2-widget .rc2-stat-val {
+      font-size: 26px;
+      font-weight: 500;
+      color: #1a1a18;
+    }
+  
+    @media (prefers-color-scheme: dark) {
+      #rc2-widget .rc2-stat-val { color: #e8e6e0; }
+    }
+  
+    #rc2-widget .rc2-stat-sub {
+      font-size: 11px;
+      color: #9a9891;
+      margin-top: 2px;
+    }
+  
+    #rc2-widget .rc2-legend {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      font-size: 12px;
+      color: #6b6a65;
+      margin-bottom: 8px;
+      align-items: center;
+    }
+  
+    #rc2-widget .rc2-legend-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+  
+    #rc2-widget .rc2-legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+  
+    #rc2-widget .rc2-chart-wrap {
+      position: relative;
+      width: 100%;
+    }
+  
+    #rc2-widget .rc2-tooltip {
+      position: absolute;
+      pointer-events: none;
+      background: #ffffff;
+      border: 0.5px solid rgba(0,0,0,0.2);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 12px;
+      color: #1a1a18;
+      line-height: 1.8;
+      opacity: 0;
+      transition: opacity 0.15s;
+      z-index: 10;
+      white-space: nowrap;
+    }
+  
+    @media (prefers-color-scheme: dark) {
+      #rc2-widget .rc2-tooltip {
+        background: #2a2a28;
+        border-color: rgba(255,255,255,0.15);
+        color: #e8e6e0;
+      }
+    }
+  
+    #rc2-widget .rc2-note {
+      padding: 12px 16px;
+      background: #f5f4f0;
+      border-radius: 12px;
+      font-size: 12px;
+      color: #6b6a65;
+      line-height: 1.6;
+      margin-top: 16px;
+    }
+  
+    @media (prefers-color-scheme: dark) {
+      #rc2-widget .rc2-note { background: #2a2a28; color: #9a9891; }
+    }
+  
+    #rc2-widget .rc2-note strong {
+      color: #1a1a18;
+      font-weight: 500;
+    }
+  
+    @media (prefers-color-scheme: dark) {
+      #rc2-widget .rc2-note strong { color: #e8e6e0; }
+    }
+  
+    @media (max-width: 500px) {
+      #rc2-widget .rc2-stat-grid { grid-template-columns: 1fr 1fr; }
+      #rc2-widget .rc2-label { min-width: 100px; }
+      #rc2-widget h1 { font-size: 17px; }
+    }
+  </style>
+  
+  <h1>Roth IRA + HSA growth calculator</h1>
+  <p class="rc2-subtitle">Starting at age 18, contributing annually until 65 — all growth tax-free</p>
+  
+  <div class="rc2-slider-row">
+    <span class="rc2-label">Return rate</span>
+    <input type="range" min="4" max="12" step="1" value="7" id="rc2-rate">
+    <span class="rc2-val" id="rc2-rate-out">7%</span>
+  </div>
+  <div class="rc2-slider-row">
+    <span class="rc2-label">Roth IRA / yr</span>
+    <input type="range" min="1000" max="7000" step="500" value="7000" id="rc2-roth">
+    <span class="rc2-val" id="rc2-roth-out">$7,000</span>
+  </div>
+  <div class="rc2-slider-row">
+    <span class="rc2-label">HSA / yr</span>
+    <input type="range" min="500" max="4300" step="100" value="4300" id="rc2-hsa">
+    <span class="rc2-val" id="rc2-hsa-out">$4,300</span>
+  </div>
+  
+  <div class="rc2-stat-grid" id="rc2-stats"></div>
+  
+  <div class="rc2-legend">
+    <div class="rc2-legend-item">
+      <span class="rc2-legend-dot" style="background:#C8E044"></span>Roth IRA
+    </div>
+    <div class="rc2-legend-item">
+      <span class="rc2-legend-dot" style="background:#7A8C3A"></span>HSA
+    </div>
+    <div class="rc2-legend-item">
+      <svg width="20" height="10" style="flex-shrink:0">
+        <line x1="0" y1="5" x2="20" y2="5" stroke="#0D1B2A" stroke-width="2.5"/>
+      </svg>
+      Total contributed
+    </div>
+  </div>
+  
+  <div class="rc2-chart-wrap">
+    <div id="rc2-chart"></div>
+    <div class="rc2-tooltip" id="rc2-tip"></div>
+  </div>
+  
+  <div class="rc2-note">
+    <strong>Assumptions:</strong> Contributions made at the start of each year, compounded annually. HSA balance assumes funds are invested and not spent on current medical expenses. Roth IRA withdrawals after 59½ are fully tax-free on qualified distributions. HSA withdrawals for qualified medical expenses are tax-free at any age; non-medical withdrawals after 65 are taxed as ordinary income with no penalty. Returns are hypothetical — past market performance does not guarantee future results. Not financial advice.
+  </div>
+  
+  </div>
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+  <script>
+  (function () {
+    var YEARS     = 47;
+    var START_AGE = 18;
+    var GREEN     = '#C8E044';
+    var AMBER     = '#7A8C3A';
+    var BLUE      = '#0D1B2A';
+    var GRAY      = '#888780';
+    var isDark    = matchMedia('(prefers-color-scheme: dark)').matches;
+    var gridColor = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.07)';
+  
+    function fmt(n) {
+      if (n >= 1e6) return '$' + (n / 1e6).toFixed(2) + 'M';
+      return '$' + Math.round(n).toLocaleString();
+    }
+  
+    function fmtAxis(n) {
+      if (n >= 1e6) return '$' + (n / 1e6).toFixed(1) + 'M';
+      return '$' + (n / 1000).toFixed(0) + 'K';
+    }
+  
+    function buildData(rate, rothAmt, hsaAmt) {
+      var rows = [];
+      var roth = 0, hsa = 0;
+      for (var y = 0; y <= YEARS; y++) {
+        rows.push({
+          age:        START_AGE + y,
+          roth:       Math.round(roth),
+          hsa:        Math.round(hsa),
+          contributed: y * (rothAmt + hsaAmt)
+        });
+        if (y < YEARS) {
+          roth = (roth + rothAmt) * (1 + rate);
+          hsa  = (hsa  + hsaAmt)  * (1 + rate);
+        }
+      }
+      return rows;
+    }
+  
+    var margin = { top: 20, right: 20, bottom: 36, left: 60 };
+    var totalW  = 680;
+    var totalH  = 320;
+    var W = totalW - margin.left - margin.right;
+    var H = totalH - margin.top  - margin.bottom;
+  
+    var svg = d3.select('#rc2-chart')
+      .append('svg')
+      .attr('viewBox', '0 0 ' + totalW + ' ' + totalH)
+      .attr('width', '100%')
+      .attr('preserveAspectRatio', 'xMidYMid meet');
+  
+    var g = svg.append('g')
+      .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+  
+    var xScale = d3.scaleLinear()
+      .domain([START_AGE, START_AGE + YEARS])
+      .range([0, W]);
+  
+    var yScale = d3.scaleLinear().range([H, 0]);
+  
+    var stack = d3.stack().keys(['roth', 'hsa']);
+  
+    function makeArea() {
+      return d3.area()
+        .x(function(d) { return xScale(d.data.age); })
+        .y0(function(d) { return yScale(d[0]); })
+        .y1(function(d) { return yScale(d[1]); })
+        .curve(d3.curveCatmullRom.alpha(0.5));
+    }
+  
+    var lineGen = d3.line()
+      .x(function(d) { return xScale(d.age); })
+      .y(function(d) { return yScale(d.contributed); })
+      .curve(d3.curveCatmullRom.alpha(0.5));
+  
+    g.append('g').attr('class', 'rc2-x-axis').attr('transform', 'translate(0,' + H + ')');
+    g.append('g').attr('class', 'rc2-y-axis');
+    g.append('g').attr('class', 'rc2-grid');
+  
+    var colors = { roth: GREEN, hsa: AMBER };
+    var layersG = g.append('g');
+  
+    var contribPath = g.append('path')
+      .attr('fill', 'none')
+      .attr('stroke', BLUE)
+      .attr('stroke-width', 2.5)
+      .attr('stroke-linejoin', 'round');
+  
+    var hoverLine = g.append('line')
+      .attr('stroke', isDark ? 'rgba(255,255,255,0.25)' : 'rgba(0,0,0,0.15)')
+      .attr('stroke-width', 1)
+      .attr('y1', 0)
+      .attr('y2', H)
+      .style('opacity', 0);
+  
+    var overlay = g.append('rect')
+      .attr('width', W)
+      .attr('height', H)
+      .attr('fill', 'none')
+      .attr('pointer-events', 'all');
+  
+    var tip = document.getElementById('rc2-tip');
+  
+    function update(rate, rothAmt, hsaAmt, animate) {
+      var data   = buildData(rate, rothAmt, hsaAmt);
+      var last   = data[data.length - 1];
+      var maxY   = (last.roth + last.hsa) * 1.05;
+  
+      yScale.domain([0, maxY]);
+  
+      var dur = animate ? 500 : 0;
+  
+      var xAxis = d3.axisBottom(xScale)
+        .ticks(8).tickFormat(function(d) { return d; }).tickSize(0);
+      var yAxis = d3.axisLeft(yScale)
+        .ticks(5).tickFormat(fmtAxis).tickSize(0);
+      var gridAxis = d3.axisLeft(yScale)
+        .ticks(5).tickSize(-W).tickFormat('');
+  
+      g.select('.rc2-x-axis')
+        .call(xAxis)
+        .call(function(ax) { ax.select('.domain').remove(); })
+        .call(function(ax) {
+          ax.selectAll('text')
+            .attr('fill', GRAY)
+            .attr('dy', '1.2em')
+            .style('font-size', '11px');
+        });
+  
+      g.select('.rc2-y-axis')
+        .call(yAxis)
+        .call(function(ax) { ax.select('.domain').remove(); })
+        .call(function(ax) {
+          ax.selectAll('text')
+            .attr('fill', GRAY)
+            .attr('dx', '-4')
+            .style('font-size', '11px');
+        });
+  
+      g.select('.rc2-grid')
+        .call(gridAxis)
+        .call(function(ax) { ax.select('.domain').remove(); })
+        .call(function(ax) {
+          ax.selectAll('line')
+            .attr('stroke', gridColor)
+            .attr('stroke-dasharray', '3,3');
+        })
+        .call(function(ax) { ax.selectAll('text').remove(); });
+  
+      var stackedData = stack(data);
+  
+      var paths = layersG.selectAll('path').data(stackedData, function(d) { return d.key; });
+  
+      paths.enter()
+        .append('path')
+        .attr('fill', function(d) { return colors[d.key]; })
+        .attr('opacity', 0.82)
+        .merge(paths)
+        .transition().duration(dur).ease(d3.easeCubicOut)
+        .attr('d', function(d) { return makeArea()(d); });
+  
+      contribPath
+        .datum(data)
+        .transition().duration(dur).ease(d3.easeCubicOut)
+        .attr('d', lineGen);
+  
+      var totalFinal   = last.roth + last.hsa;
+      var totalContrib = last.contributed;
+      var totalGain    = totalFinal - totalContrib;
+  
+      document.getElementById('rc2-stats').innerHTML =
+        '<div class="rc2-stat">' +
+          '<div class="rc2-stat-label">Total at 65</div>' +
+          '<div class="rc2-stat-val">' + fmt(totalFinal) + '</div>' +
+          '<div class="rc2-stat-sub">all tax-free*</div>' +
+        '</div>' +
+        '<div class="rc2-stat">' +
+          '<div class="rc2-stat-label">You contributed</div>' +
+          '<div class="rc2-stat-val">' + fmt(totalContrib) + '</div>' +
+          '<div class="rc2-stat-sub">' + fmt(rothAmt + hsaAmt) + '/yr \u00d7 47 yrs</div>' +
+        '</div>' +
+        '<div class="rc2-stat">' +
+          '<div class="rc2-stat-label">Tax-free gains</div>' +
+          '<div class="rc2-stat-val">' + fmt(totalGain) + '</div>' +
+          '<div class="rc2-stat-sub">' + Math.round(totalGain / totalContrib * 100) + '% return on contributions</div>' +
+        '</div>';
+  
+      overlay
+        .on('mousemove', function(event) {
+          var coords = d3.pointer(event, this);
+          var mx  = coords[0];
+          var age = Math.round(xScale.invert(mx));
+          var clamped = Math.max(START_AGE, Math.min(START_AGE + YEARS, age));
+          var row = data.find(function(d) { return d.age === clamped; });
+          if (!row) return;
+  
+          var x = xScale(row.age);
+          hoverLine.attr('x1', x).attr('x2', x).style('opacity', 1);
+  
+          var total = row.roth + row.hsa;
+          tip.style.opacity = '1';
+          tip.innerHTML =
+            '<strong>Age ' + row.age + '</strong><br>' +
+            '<span style="color:' + GREEN + '">Roth IRA: ' + fmt(row.roth) + '</span><br>' +
+            '<span style="color:' + AMBER + '">HSA: ' + fmt(row.hsa) + '</span><br>' +
+            '<span style="color:' + BLUE  + '">Contributed: ' + fmt(row.contributed) + '</span><br>' +
+            '<strong>Total: ' + fmt(total) + '</strong>';
+  
+          var chartEl = document.getElementById('rc2-chart');
+          var rect    = chartEl.getBoundingClientRect();
+          var svgW    = rect.width;
+          var scaledX = (x + margin.left) / totalW * svgW;
+          var tipW    = tip.offsetWidth || 180;
+          tip.style.left = (scaledX + tipW + 10 > svgW ? scaledX - tipW - 10 : scaledX + 10) + 'px';
+          tip.style.top  = '20px';
+        })
+        .on('mouseleave', function() {
+          hoverLine.style('opacity', 0);
+          tip.style.opacity = '0';
+        });
+    }
+  
+    function getVals() {
+      return {
+        rate:    parseInt(document.getElementById('rc2-rate').value) / 100,
+        rothAmt: parseInt(document.getElementById('rc2-roth').value),
+        hsaAmt:  parseInt(document.getElementById('rc2-hsa').value)
+      };
+    }
+  
+    function onInput() {
+      var v = getVals();
+      document.getElementById('rc2-rate-out').textContent = (v.rate * 100).toFixed(0) + '%';
+      document.getElementById('rc2-roth-out').textContent = '$' + v.rothAmt.toLocaleString();
+      document.getElementById('rc2-hsa-out').textContent  = '$' + v.hsaAmt.toLocaleString();
+      update(v.rate, v.rothAmt, v.hsaAmt, true);
+    }
+  
+    ['rc2-rate', 'rc2-roth', 'rc2-hsa'].forEach(function(id) {
+      document.getElementById(id).addEventListener('input', onInput);
+    });
+  
+    var v = getVals();
+    update(v.rate, v.rothAmt, v.hsaAmt, false);
+  
+  })();
+  </script>
