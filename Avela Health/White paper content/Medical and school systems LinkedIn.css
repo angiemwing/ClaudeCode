@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Avela — LinkedIn Carousel · Post 2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;1,8..60,300;1,8..60,400&display=swap" rel="stylesheet">
+
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root {
+  --navy:   #041134;
+  --cream:  #f1efe3;
+  --blue:   #8ec5e6;
+  --blue2:  #5aaad4;
+  --green:  #2d6a4f;
+  --slate:  #6b7a8d;
+  --sage:   #dde3d3;
+  --sage2:  #c4ccb7;
+  --size:   min(560px, 92vw);
+  --sans:   'DM Sans', sans-serif;
+  --serif:  'Source Serif 4', Georgia, serif;
+}
+
+html,body {
+  min-height: 100vh;
+  background: #070e1c;
+  font-family: var(--sans);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 36px 16px 56px;
+  gap: 22px;
+}
+
+/* chrome */
+.chrome {
+  width: var(--size);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.chrome-l {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 1.9px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.25);
+}
+.chrome-r { font-size: 11px; color: rgba(255,255,255,.25); }
+
+/* frame */
+.frame {
+  width: var(--size);
+  height: var(--size);
+  position: relative;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.06),
+    0 28px 70px rgba(0,0,0,.6),
+    0 4px 14px rgba(0,0,0,.28);
+}
+
+/* slides */
+.slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(22px);
+  transition: opacity .36s cubic-bezier(.4,0,.2,1), transform .36s cubic-bezier(.4,0,.2,1);
+}
+.slide.active   { opacity:1; pointer-events:auto; transform:translateX(0); }
+.slide.leaving  { opacity:0; transform:translateX(-22px); transition: opacity .24s ease, transform .24s ease; }
+
+/* ── shared utility ── */
+.tag {
+  font-size: clamp(7px,1.4vw,9px);
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 3%;
+}
+.hl {
+  font-size: clamp(14px,3vw,21px);
+  font-weight: 500;
+  color: var(--navy);
+  line-height: 1.2;
+  letter-spacing: -.3px;
+  margin-bottom: 5%;
+}
+.hl b { font-weight: 700; }
+.ft {
+  margin-top: auto;
+  padding-top: 3.5%;
+  font-size: clamp(7.5px,1.3vw,9.5px);
+  font-weight: 500;
+}
+.ft.dk { color: rgba(4,17,52,.28); }
+.ft.lt { color: rgba(241,239,227,.2); }
+
+/* ════════ S1 COVER ════════ */
+.s1 {
+  background: var(--navy);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 9.5% 10%;
+  overflow: hidden;
+}
+.s1::before {
+  content:''; position:absolute; top:-18%; right:-18%;
+  width:62%; height:62%;
+  background:radial-gradient(circle,rgba(142,197,230,.12) 0%,transparent 65%);
+}
+.s1::after {
+  content:''; position:absolute; bottom:-14%; left:-10%;
+  width:50%; height:50%;
+  background:radial-gradient(circle,rgba(45,106,79,.08) 0%,transparent 65%);
+}
+.s1-top,.s1-mid,.s1-bot { position:relative; z-index:2; }
+.s1-bot { display:flex; align-items:flex-end; justify-content:space-between; }
+
+.wordmark {
+  font-size: clamp(15px,3.5vw,20px);
+  font-weight: 500;
+  color: var(--cream);
+  letter-spacing: -.2px;
+}
+.ey {
+  font-size: clamp(8px,1.6vw,10px);
+  font-weight: 600;
+  letter-spacing: 2.2px;
+  text-transform: uppercase;
+  color: var(--blue);
+  margin-bottom: 4%;
+}
+.s1-head {
+  font-size: clamp(30px,8vw,54px);
+  font-weight: 300;
+  color: var(--cream);
+  line-height: 1.07;
+  letter-spacing: -1.5px;
+  margin-bottom: 5%;
+}
+.s1-head b { font-weight:700; }
+.s1-sub {
+  font-size: clamp(11px,2.2vw,14px);
+  font-weight: 300;
+  color: rgba(142,197,230,.68);
+  line-height: 1.62;
+  max-width: 78%;
+}
+.sh {
+  display:flex; align-items:center; gap:5px;
+  font-size:10px; color:rgba(255,255,255,.18);
+}
+.sn { font-size:10px; color:rgba(255,255,255,.18); }
+
+/* ════════ S2 TWO SYSTEMS ════════ */
+.s2 {
+  background: var(--cream);
+  display: flex;
+  flex-direction: column;
+  padding: 8% 8.5%;
+}
+.s2 .tag { color: var(--blue2); }
+.two { display:grid; grid-template-columns:1fr 1fr; gap:3%; flex:1; min-height:0; }
+
+.sys {
+  border-radius: 14px;
+  padding: 7.5% 8%;
+  display: flex;
+  flex-direction: column;
+}
+.sys.nv { background: var(--navy); }
+.sys.sg { background: var(--sage); border: 1.5px solid var(--sage2); }
+
+.sys-ico { font-size:clamp(18px,4vw,26px); margin-bottom:6%; line-height:1; }
+.sys-nm  {
+  font-size: clamp(12px,2.5vw,17px);
+  font-weight: 700;
+  line-height: 1.15;
+  margin-bottom: 5%;
+}
+.sys.nv .sys-nm { color:var(--cream); }
+.sys.sg .sys-nm { color:var(--navy); }
+
+.sys-by {
+  font-size: clamp(7.5px,1.4vw,9.5px);
+  line-height: 1.55;
+  margin-bottom: 5%;
+  padding-bottom: 5%;
+}
+.sys.nv .sys-by { color:rgba(241,239,227,.42); border-bottom:1px solid rgba(255,255,255,.08); }
+.sys.sg .sys-by { color:rgba(4,17,52,.42);     border-bottom:1px solid rgba(4,17,52,.1); }
+
+.sys-ul-l {
+  font-size: clamp(7px,1.2vw,8.5px);
+  font-weight: 700;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  margin-bottom: 3%;
+}
+.sys.nv .sys-ul-l { color:var(--blue); }
+.sys.sg .sys-ul-l { color:var(--green); }
+
+.sys-ul { font-size:clamp(8px,1.4vw,10px); line-height:1.9; }
+.sys.nv .sys-ul { color:rgba(241,239,227,.58); }
+.sys.sg .sys-ul { color:rgba(4,17,52,.58); }
+.sys-it { opacity:.55; font-size:.88em; font-style:italic; }
+
+/* ════════ S3 IEP ════════ */
+.s3 {
+  background: var(--navy);
+  display: flex;
+  flex-direction: column;
+  padding: 8% 8.5%;
+}
+.s3 .tag { color:var(--blue); }
+.s3 .hl  { color:var(--cream); font-weight:300; }
+
+.qs { display:flex; flex-direction:column; gap:3%; flex:1; min-height:0; }
+
+.qc {
+  background: rgba(255,255,255,.055);
+  border: 1px solid rgba(255,255,255,.09);
+  border-radius: 12px;
+  padding: 5% 6%;
+  display: flex;
+  align-items: flex-start;
+  gap: 4%;
+}
+.qn {
+  font-size: clamp(28px,6.5vw,44px);
+  font-weight: 700;
+  color: var(--blue);
+  line-height: 1;
+  opacity: .72;
+  min-width: 13%;
+  flex-shrink: 0;
+}
+.qt {
+  font-size: clamp(10px,2vw,13.5px);
+  font-weight: 600;
+  color: var(--cream);
+  line-height: 1.3;
+  margin-bottom: 2%;
+}
+.qd {
+  font-size: clamp(8px,1.4vw,10px);
+  color: rgba(241,239,227,.4);
+  line-height: 1.55;
+}
+.iep-box {
+  background: rgba(142,197,230,.09);
+  border: 1px solid rgba(142,197,230,.2);
+  border-radius: 10px;
+  padding: 4.5% 5.5%;
+}
+.iep-tag {
+  font-size: clamp(7px,1.2vw,8.5px);
+  font-weight: 700;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  color: var(--blue);
+  margin-bottom: 2.5%;
+}
+.iep-body {
+  font-size: clamp(9px,1.65vw,11px);
+  color: rgba(241,239,227,.7);
+  line-height: 1.55;
+}
+.iep-body b { color:var(--cream); font-weight:600; }
+
+/* ════════ S4 504 PLAN ════════ */
+.s4 {
+  background: var(--cream);
+  display: flex;
+  flex-direction: column;
+  padding: 8% 8.5%;
+}
+.badge {
+  display: inline-flex;
+  align-items: center;
+  background: var(--navy);
+  color: var(--blue);
+  font-size: clamp(7px,1.2vw,8.5px);
+  font-weight: 700;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  padding: 4px 11px;
+  border-radius: 4px;
+  align-self: flex-start;
+  margin-bottom: 3.5%;
+}
+
+.ctab {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  flex: 1;
+  margin-top: 3%;
+}
+.ctab thead th {
+  font-size: clamp(7.5px,1.3vw,9.5px);
+  font-weight: 700;
+  text-align: center;
+  padding-bottom: 3%;
+}
+.ctab thead th:first-child { text-align:left; color:transparent; user-select:none; }
+.ctab thead th.hi  { color:var(--navy); }
+.ctab thead th.hg  { color:var(--green); }
+
+.ctab td {
+  font-size: clamp(7.5px,1.35vw,9.5px);
+  padding: 0 1.5%;
+  vertical-align: middle;
+  line-height: 1.4;
+}
+.ctab tr { height: clamp(36px,7vw,52px); }
+.ctab td.asp {
+  width:28%; color:var(--slate);
+  font-size:clamp(7px,1.2vw,9px); padding-left:0;
+}
+.ctab td.ci, .ctab td.cf { width:36%; text-align:center; }
+.ctab td.ci { background:var(--navy); color:var(--cream); }
+.ctab td.cf { background:var(--sage); color:var(--navy); border:1px solid var(--sage2); }
+.ctab td.ci em, .ctab td.cf em { font-style:normal; opacity:.5; font-size:.85em; display:block; }
+.ctab td.ci.hi { color:var(--blue);  font-weight:700; }
+.ctab td.cf.hi { color:var(--green); font-weight:700; }
+.ctab tr:first-child td.ci { border-radius:10px 10px 0 0; }
+.ctab tr:last-child  td.ci { border-radius:0 0 10px 10px; }
+.ctab tr:first-child td.cf { border-radius:10px 10px 0 0; }
+.ctab tr:last-child  td.cf { border-radius:0 0 10px 10px; }
+.spr td { height:3px; padding:0; }
+
+.free {
+  background: var(--green);
+  border-radius: 10px;
+  padding: 3.5% 5%;
+  text-align: center;
+  font-size: clamp(9px,1.65vw,11.5px);
+  color: #d4edd9;
+  font-weight: 500;
+  line-height: 1.4;
+  margin-top: 4%;
+}
+
+/* ════════ S5 BOTTOM LINE ════════ */
+.s5 {
+  background: var(--cream);
+  display: flex;
+  flex-direction: column;
+  padding: 8% 8.5%;
+}
+.tl { display:flex; flex-direction:column; flex:1; margin:4% 0 3%; min-height:0; }
+.tr { display:flex; gap:4.5%; flex:1; min-height:0; }
+.sp { display:flex; flex-direction:column; align-items:center; flex-shrink:0; width:14px; padding-top:3px; }
+.dt {
+  width:11px; height:11px; border-radius:50%; flex-shrink:0;
+}
+.dt.b { background:var(--blue2); }
+.dt.n { background:var(--navy); }
+.dt.g { background:var(--green); }
+.ln { flex:1; width:1.5px; background:rgba(4,17,52,.1); margin:4px 0; }
+.tb { flex:1; }
+.tt {
+  font-size: clamp(10px,1.95vw,13.5px);
+  font-weight: 600;
+  color: var(--navy);
+  line-height: 1.3;
+  margin-bottom: 1.5%;
+}
+.td {
+  font-size: clamp(8px,1.4vw,10px);
+  color: var(--slate);
+  line-height: 1.55;
+}
+.co {
+  background: var(--navy);
+  border-radius: 10px;
+  padding: 4% 5.5%;
+  font-size: clamp(9px,1.7vw,12px);
+  color: rgba(241,239,227,.72);
+  line-height: 1.5;
+  margin-top: auto;
+}
+.co b { color:var(--blue); font-weight:600; }
+
+/* ════════ S6 CTA ════════ */
+.s6 {
+  background: var(--navy);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 9.5% 10%;
+  overflow: hidden;
+}
+.s6::before {
+  content:''; position:absolute; bottom:-20%; right:-20%;
+  width:65%; height:65%;
+  background:radial-gradient(circle,rgba(142,197,230,.1) 0%,transparent 65%);
+}
+.s6::after {
+  content:''; position:absolute; top:-10%; left:30%;
+  width:40%; height:40%;
+  background:radial-gradient(circle,rgba(45,106,79,.07) 0%,transparent 65%);
+}
+.s6-top,.s6-bot { position:relative; z-index:2; }
+.s6-bot { display:flex; align-items:flex-end; justify-content:space-between; }
+
+.s6-ey {
+  font-size: clamp(8px,1.6vw,10px);
+  font-weight: 600;
+  letter-spacing: 2.2px;
+  text-transform: uppercase;
+  color: var(--blue);
+  margin-bottom: 4.5%;
+}
+.s6-hd {
+  font-size: clamp(30px,7.5vw,52px);
+  font-weight: 300;
+  color: var(--cream);
+  line-height: 1.08;
+  letter-spacing: -1.4px;
+  margin-bottom: 5%;
+}
+.s6-hd b { font-weight:700; }
+.s6-bd {
+  font-size: clamp(10px,1.9vw,13px);
+  font-weight: 300;
+  color: rgba(241,239,227,.5);
+  line-height: 1.65;
+  max-width: 83%;
+  margin-bottom: 6%;
+}
+.s6-url {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(142,197,230,.1);
+  border: 1px solid rgba(142,197,230,.22);
+  border-radius: 8px;
+  padding: 10px 18px;
+  font-size: clamp(10px,2vw,13px);
+  font-weight: 500;
+  color: var(--blue);
+  text-decoration: none;
+  transition: background .18s;
+}
+.s6-url:hover { background:rgba(142,197,230,.18); }
+.s6-lg { font-size:clamp(14px,3vw,19px); font-weight:500; color:rgba(241,239,227,.3); }
+.s6-pg { font-size:10px; color:rgba(255,255,255,.15); }
+
+/* ════════ NAV ════════ */
+.nav { width:var(--size); display:flex; flex-direction:column; gap:14px; }
+.dots { display:flex; align-items:center; justify-content:center; gap:5px; }
+.d {
+  height:3px; border-radius:1.5px;
+  background:rgba(255,255,255,.17);
+  cursor:pointer;
+  transition:width .3s ease, background .3s ease;
+  width:18px; border:none; padding:0;
+}
+.d.on { background:var(--blue); width:30px; }
+
+.btns { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.btn {
+  display:flex; align-items:center; justify-content:center; gap:7px;
+  padding:13px 0; border-radius:10px;
+  font-family:var(--sans); font-size:13px; font-weight:500;
+  cursor:pointer;
+  transition:background .18s, color .18s, border-color .18s;
+  border:1px solid rgba(255,255,255,.1);
+  background:rgba(255,255,255,.04);
+  color:rgba(255,255,255,.5);
+}
+.btn:hover:not(:disabled) { background:rgba(255,255,255,.09); color:rgba(255,255,255,.85); border-color:rgba(255,255,255,.18); }
+.btn:disabled { opacity:.22; cursor:default; }
+.btn.go { background:var(--blue); border-color:var(--blue); color:var(--navy); font-weight:700; }
+.btn.go:hover:not(:disabled) { background:#a6d8f0; border-color:#a6d8f0; }
+.nlbl { text-align:center; font-size:10.5px; color:rgba(255,255,255,.23); letter-spacing:.3px; }
+.hint { font-size:10px; color:rgba(255,255,255,.14); text-align:center; letter-spacing:.3px; }
+</style>
+</head>
+<body>
+
+<div class="chrome">
+  <span class="chrome-l">Avela Health · LinkedIn Carousel · Post 2</span>
+  <span class="chrome-r" id="cnt">1 / 6</span>
+</div>
+
+<div class="frame" id="frame">
+
+  <!-- ══ S1 COVER ══ -->
+  <div class="slide s1 active" data-i="0">
+    <div class="s1-top"><div class="wordmark">Avela</div></div>
+    <div class="s1-mid">
+      <div class="ey">What every parent needs to know</div>
+      <div class="s1-head">Medical<br>diagnosis vs.<br><b>school eligibility</b></div>
+      <div class="s1-sub">They are not the same thing — understanding the difference can save your child months of delays in getting support.</div>
+    </div>
+    <div class="s1-bot">
+      <div class="sh">
+        <svg width="12" height="12" fill="none" viewBox="0 0 12 12"><path d="M2 6h8M7 3l3 3-3 3" stroke="rgba(255,255,255,.25)" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Swipe to explore
+      </div>
+      <div class="sn">1 / 6</div>
+    </div>
+  </div>
+
+  <!-- ══ S2 TWO SYSTEMS ══ -->
+  <div class="slide s2" data-i="1">
+    <div class="tag">The two systems</div>
+    <div class="hl">In the US, autism support runs through<br>two entirely separate systems</div>
+    <div class="two">
+      <div class="sys nv">
+        <div class="sys-ico">🏥</div>
+        <div class="sys-nm">Medical<br>Diagnosis</div>
+        <div class="sys-by">By a psychologist, psychiatrist, developmental pediatrician, or neurologist</div>
+        <div class="sys-ul-l">Unlocks</div>
+        <div class="sys-ul">ABA therapy<br>Speech therapy<br>Occupational therapy<br><span class="sys-it">via insurance</span></div>
+      </div>
+      <div class="sys sg">
+        <div class="sys-ico">🏫</div>
+        <div class="sys-nm">School<br>Eligibility</div>
+        <div class="sys-by">Evaluated separately under IDEA — for children ages 3–21</div>
+        <div class="sys-ul-l" style="color:var(--green)">Unlocks</div>
+        <div class="sys-ul" style="color:rgba(4,17,52,.58)">IEP services<br>504 Plan<br>Accommodations<br><span class="sys-it">free of charge</span></div>
+      </div>
+    </div>
+    <div class="ft dk">Avela Health · joinavela.com</div>
+  </div>
+
+  <!-- ══ S3 IEP ══ -->
+  <div class="slide s3" data-i="2">
+    <div class="tag">School eligibility · IEP</div>
+    <div class="hl" style="color:var(--cream);font-weight:300">To qualify for an <b>IEP</b>,<br>your child must meet both:</div>
+    <div class="qs">
+      <div class="qc">
+        <div class="qn">1</div>
+        <div>
+          <div class="qt">Meet criteria for 1 of 14 listed disability categories</div>
+          <div class="qd">Autism is one of 14 categories listed under IDEA — the Individuals with Disabilities Education Act</div>
+        </div>
+      </div>
+      <div class="qc">
+        <div class="qn">2</div>
+        <div>
+          <div class="qt">Require specialized services to access education</div>
+          <div class="qd">Even with a medical diagnosis, if the school determines your child can learn without special services, they may not qualify for an IEP</div>
+        </div>
+      </div>
+      <div class="iep-box">
+        <div class="iep-tag">If both criteria are met →</div>
+        <div class="iep-body">Your child receives an <b>IEP</b> — individualized goals, specialized instruction, accommodations, and related services, all at no cost</div>
+      </div>
+    </div>
+    <div class="ft lt">Avela Health · joinavela.com</div>
+  </div>
+
+  <!-- ══ S4 504 PLAN ══ -->
+  <div class="slide s4" data-i="3">
+    <div class="badge">The middle ground</div>
+    <div class="hl">Don't qualify for an IEP?<br>You may still get a <b>504 Plan</b></div>
+    <table class="ctab">
+      <thead>
+        <tr>
+          <th></th>
+          <th class="hi">IEP</th>
+          <th class="hg">504 Plan</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="asp">Disability<br>definition</td>
+          <td class="ci">Narrower<em>under IDEA</em></td>
+          <td class="cf">Broader<em>more inclusive</em></td>
+        </tr>
+        <tr class="spr"><td colspan="3"></td></tr>
+        <tr>
+          <td class="asp">What it<br>provides</td>
+          <td class="ci">Specialized instruction + services</td>
+          <td class="cf">Accommodations + access support</td>
+        </tr>
+        <tr class="spr"><td colspan="3"></td></tr>
+        <tr>
+          <td class="asp">Who<br>qualifies</td>
+          <td class="ci">Needs services to learn</td>
+          <td class="cf">Needs accommodation to access general ed</td>
+        </tr>
+        <tr class="spr"><td colspan="3"></td></tr>
+        <tr>
+          <td class="asp">Cost</td>
+          <td class="ci hi">Free</td>
+          <td class="cf hi">Free</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="free">Both IEPs and 504 Plans are provided free of charge through your child's school</div>
+    <div class="ft dk" style="margin-top:3%">Avela Health · joinavela.com</div>
+  </div>
+
+  <!-- ══ S5 BOTTOM LINE ══ -->
+  <div class="slide s5" data-i="4">
+    <div class="tag" style="color:var(--blue2)">Bottom line</div>
+    <div class="hl">You may need to pursue<br><b>both systems</b> separately</div>
+    <div class="tl">
+      <div class="tr">
+        <div class="sp"><div class="dt b"></div><div class="ln"></div></div>
+        <div class="tb">
+          <div class="tt">Step 1 — Get a medical evaluation</div>
+          <div class="td">Unlocks insurance-covered therapies: ABA, speech, occupational therapy. Avela evaluations available in days, not months.</div>
+        </div>
+      </div>
+      <div class="tr">
+        <div class="sp"><div class="dt n"></div><div class="ln"></div></div>
+        <div class="tb">
+          <div class="tt">Step 2 — Request a school evaluation</div>
+          <div class="td">A medical diagnosis does not automatically trigger school services. You must separately request an evaluation from your school district.</div>
+        </div>
+      </div>
+      <div class="tr">
+        <div class="sp"><div class="dt g"></div></div>
+        <div class="tb">
+          <div class="tt">Step 3 — IEP or 504 Plan</div>
+          <div class="td">Free accommodations and services delivered through your child's school once eligibility is confirmed.</div>
+        </div>
+      </div>
+    </div>
+    <div class="co">Understanding both systems early means your child gets <b>support faster</b> — with fewer gaps and delays.</div>
+    <div class="ft dk" style="margin-top:3%">Avela Health · joinavela.com</div>
+  </div>
+
+  <!-- ══ S6 CTA ══ -->
+  <div class="slide s6" data-i="5">
+    <div class="wordmark" style="position:relative;z-index:2">Avela</div>
+    <div class="s6-top">
+      <div class="s6-ey">Get answers faster</div>
+      <div class="s6-hd">Expert-led<br>evaluations in<br><b>days, not months</b></div>
+      <div class="s6-bd">Avela Health provides neurodiversity-affirming autism evaluations from clinical experts — virtual, flexible, and built around your family's needs.</div>
+      <a class="s6-url" href="https://joinavela.com" target="_blank">
+        <svg width="13" height="13" fill="none" viewBox="0 0 13 13"><path d="M2.5 6.5h8M8 3l3.5 3.5L8 10" stroke="#8ec5e6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        joinavela.com
+      </a>
+    </div>
+    <div class="s6-bot">
+      <div class="s6-lg">Avela</div>
+      <div class="s6-pg">6 / 6</div>
+    </div>
+  </div>
+
+</div><!-- /frame -->
+
+<!-- ══ NAV ══ -->
+<div class="nav">
+  <div class="dots" id="dots"></div>
+  <div class="btns">
+    <button class="btn" id="pb" onclick="go(-1)" disabled>
+      <svg width="13" height="13" fill="none" viewBox="0 0 13 13"><path d="M8 2L3 6.5 8 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Previous
+    </button>
+    <button class="btn go" id="nb" onclick="go(1)">
+      Next
+      <svg width="13" height="13" fill="none" viewBox="0 0 13 13"><path d="M5 2l5 4.5L5 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
+  <div class="nlbl" id="lbl">Cover slide</div>
+</div>
+
+<div class="hint">← → arrow keys · swipe · click dots &nbsp;·&nbsp; 1080×1080px LinkedIn carousel</div>
+
+<script>
+const NAMES=['Cover slide','The two systems','IEP eligibility criteria','504 Plan comparison','Bottom line — action steps','CTA · joinavela.com'];
+const slides=document.querySelectorAll('.slide');
+const dotsEl=document.getElementById('dots');
+const pb=document.getElementById('pb');
+const nb=document.getElementById('nb');
+const lbl=document.getElementById('lbl');
+const cnt=document.getElementById('cnt');
+const N=slides.length;
+let cur=0;
+
+for(let i=0;i<N;i++){
+  const b=document.createElement('button');
+  b.className='d'+(i===0?' on':'');
+  b.setAttribute('aria-label','Slide '+(i+1));
+  b.onclick=()=>goTo(i);
+  dotsEl.appendChild(b);
+}
+
+function sync(){
+  document.querySelectorAll('.d').forEach((d,i)=>d.classList.toggle('on',i===cur));
+  pb.disabled=cur===0;
+  nb.disabled=cur===N-1;
+  nb.innerHTML=cur<N-1
+    ?'Next <svg width="13" height="13" fill="none" viewBox="0 0 13 13"><path d="M5 2l5 4.5L5 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+    :'✓ Done';
+  lbl.textContent=NAMES[cur];
+  cnt.textContent=(cur+1)+' / '+N;
+}
+
+function goTo(next){
+  if(next===cur||next<0||next>=N)return;
+  slides[cur].classList.add('leaving');
+  slides[cur].classList.remove('active');
+  const old=cur; cur=next;
+  setTimeout(()=>slides[old].classList.remove('leaving'),260);
+  slides[cur].classList.add('active');
+  sync();
+}
+
+function go(d){goTo(cur+d);}
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key==='ArrowDown')go(1);
+  if(e.key==='ArrowLeft'||e.key==='ArrowUp')go(-1);
+});
+
+let tx=0;
+const fr=document.getElementById('frame');
+fr.addEventListener('touchstart',e=>{tx=e.touches[0].clientX},{passive:true});
+fr.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-tx;if(Math.abs(dx)>40)go(dx<0?1:-1);});
+
+sync();
+</script>
+</body>
+</html>
