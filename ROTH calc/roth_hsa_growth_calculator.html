@@ -1,374 +1,362 @@
-<div id="rc-widget">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Roth IRA + HSA Growth Calculator</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  <style>
-    #rc-widget *, #rc-widget *::before, #rc-widget *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
+  :root {
+    --bg: #ffffff;
+    --bg2: #f5f4f0;
+    --bg3: #eeedea;
+    --text: #1a1a18;
+    --text2: #6b6a65;
+    --text3: #9a9891;
+    --border: rgba(0,0,0,0.12);
+    --border2: rgba(0,0,0,0.22);
+    --radius: 8px;
+    --radius-lg: 12px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1e1e1c;
+      --bg2: #2a2a28;
+      --bg3: #323230;
+      --text: #e8e6e0;
+      --text2: #9a9891;
+      --text3: #6b6a65;
+      --border: rgba(255,255,255,0.12);
+      --border2: rgba(255,255,255,0.22);
     }
-  
-    #rc-widget {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: transparent;
-      color: #1a1a18;
-      padding: 24px;
-      max-width: 720px;
-      line-height: 1.5;
-    }
-  
-    @media (prefers-color-scheme: dark) {
-      #rc-widget { color: #e8e6e0; }
-    }
-  
-    #rc-widget h1 {
-      font-size: 20px;
-      font-weight: 500;
-      margin-bottom: 4px;
-      color: inherit;
-    }
-  
-    #rc-widget .rc-subtitle {
-      font-size: 13px;
-      color: #6b6a65;
-      margin-bottom: 24px;
-    }
-  
-    #rc-widget .rc-slider-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 12px;
-    }
-  
-    #rc-widget .rc-slider-label {
-      font-size: 13px;
-      color: #6b6a65;
-      min-width: 130px;
-    }
-  
-    #rc-widget input[type="range"] {
-      -webkit-appearance: none;
-      appearance: none;
-      flex: 1;
-      height: 4px;
-      background: #eeedea;
-      border-radius: 2px;
-      outline: none;
-      cursor: pointer;
-      border: none;
-      box-shadow: none;
-    }
-  
-    #rc-widget input[type="range"]::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      background: #1a1a18;
-      cursor: pointer;
-      border: none;
-    }
-  
-    #rc-widget input[type="range"]::-moz-range-thumb {
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      background: #1a1a18;
-      cursor: pointer;
-      border: none;
-    }
-  
-    #rc-widget #rc-roth::-webkit-slider-thumb { background: #639922; }
-    #rc-widget #rc-roth::-moz-range-thumb     { background: #639922; }
-  
-    #rc-widget #rc-hsa::-webkit-slider-thumb  { background: #EF9F27; }
-    #rc-widget #rc-hsa::-moz-range-thumb      { background: #EF9F27; }
-  
-    @media (prefers-color-scheme: dark) {
-      #rc-widget input[type="range"] { background: #323230; }
-    }
-  
-    #rc-widget .rc-slider-val {
-      font-size: 13px;
-      font-weight: 500;
-      color: #1a1a18;
-      min-width: 64px;
-      text-align: right;
-    }
-  
-    @media (prefers-color-scheme: dark) {
-      #rc-widget .rc-slider-val { color: #e8e6e0; }
-    }
-  
-    #rc-widget .rc-stat-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 8px;
-      margin-bottom: 20px;
-    }
-  
-    #rc-widget .rc-stat {
-      background: #f5f4f0;
-      border-radius: 8px;
-      padding: 14px 16px;
-    }
-  
-    @media (prefers-color-scheme: dark) {
-      #rc-widget .rc-stat { background: #2a2a28; }
-    }
-  
-    #rc-widget .rc-stat-label {
-      font-size: 11px;
-      color: #6b6a65;
-      margin-bottom: 6px;
-    }
-  
-    #rc-widget .rc-stat-val {
-      font-size: 26px;
-      font-weight: 500;
-      color: #1a1a18;
-    }
-  
-    @media (prefers-color-scheme: dark) {
-      #rc-widget .rc-stat-val { color: #e8e6e0; }
-    }
-  
-    #rc-widget .rc-stat-sub {
-      font-size: 11px;
-      color: #9a9891;
-      margin-top: 2px;
-    }
-  
-    #rc-widget .rc-legend {
-      display: flex;
-      gap: 16px;
-      flex-wrap: wrap;
-      font-size: 12px;
-      color: #6b6a65;
-      margin-bottom: 8px;
-      align-items: center;
-    }
-  
-    #rc-widget .rc-legend-item {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-  
-    #rc-widget .rc-legend-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 2px;
-      flex-shrink: 0;
-      display: inline-block;
-    }
-  
-    #rc-widget .rc-chart-wrap {
-      position: relative;
-      width: 100%;
-      height: 300px;
-      margin-bottom: 16px;
-    }
-  
-    #rc-widget .rc-note {
-      padding: 12px 16px;
-      background: #f5f4f0;
-      border-radius: 12px;
-      font-size: 12px;
-      color: #6b6a65;
-      line-height: 1.6;
-    }
-  
-    @media (prefers-color-scheme: dark) {
-      #rc-widget .rc-note { background: #2a2a28; color: #9a9891; }
-    }
-  
-    #rc-widget .rc-note strong {
-      color: #1a1a18;
-      font-weight: 500;
-    }
-  
-    @media (prefers-color-scheme: dark) {
-      #rc-widget .rc-note strong { color: #e8e6e0; }
-    }
-  
-    @media (max-width: 500px) {
-      #rc-widget .rc-stat-grid { grid-template-columns: 1fr 1fr; }
-      #rc-widget .rc-slider-label { min-width: 100px; }
-      #rc-widget h1 { font-size: 17px; }
-    }
-  </style>
-  
-  <h1>Roth IRA + HSA growth calculator</h1>
-  <p class="rc-subtitle">Starting at age 34, contributing annually until 67 — all growth tax-free</p>
-  
-  <div class="rc-slider-row">
-    <span class="rc-slider-label">Return rate</span>
-    <input type="range" min="4" max="12" step="1" value="7" id="rc-rate" oninput="rcRecalc()">
-    <span class="rc-slider-val" id="rc-rate-out">7%</span>
-  </div>
-  <div class="rc-slider-row">
-    <span class="rc-slider-label">Roth IRA / yr</span>
-    <input type="range" min="1000" max="7000" step="500" value="7000" id="rc-roth" oninput="rcRecalc()">
-    <span class="rc-slider-val" id="rc-roth-out">$7,000</span>
-  </div>
-  <div class="rc-slider-row">
-    <span class="rc-slider-label">HSA / yr</span>
-    <input type="range" min="500" max="4300" step="100" value="4300" id="rc-hsa" oninput="rcRecalc()">
-    <span class="rc-slider-val" id="rc-hsa-out">$4,300</span>
-  </div>
-  
-  <div class="rc-stat-grid" id="rc-stats"></div>
-  
-  <div class="rc-legend">
-    <div class="rc-legend-item"><span class="rc-legend-dot" style="background:#639922"></span>Roth IRA (tax-free)</div>
-    <div class="rc-legend-item"><span class="rc-legend-dot" style="background:#EF9F27"></span>HSA (tax-free for medical)</div>
-    <div class="rc-legend-item"><span class="rc-legend-dot" style="background:#1a6fd4"></span>Total contributed</div>
-  </div>
-  
-  <div class="rc-chart-wrap">
-    <canvas id="rc-chart"></canvas>
-  </div>
-  
-  <div class="rc-note">
-    <strong>Assumptions:</strong> Contributions made at the start of each year, compounded annually. HSA balance assumes funds are invested and not spent on current medical expenses. Roth IRA withdrawals after 59½ are fully tax-free on qualified distributions. HSA withdrawals for qualified medical expenses are tax-free at any age; non-medical withdrawals after 65 are taxed as ordinary income with no penalty. Returns are hypothetical — past market performance does not guarantee future results. Not financial advice.
-  </div>
-  
-  </div>
-  
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
-  <script>
-  (function () {
-    var rcChart = null;
-  
-    function rcFmt(n) {
-      if (n >= 1e6) return '$' + (n / 1e6).toFixed(2) + 'M';
-      return '$' + Math.round(n).toLocaleString();
-    }
-  
-    window.rcRecalc = function () {
-      var rate    = parseInt(document.getElementById('rc-rate').value) / 100;
-      var rothAmt = parseInt(document.getElementById('rc-roth').value);
-      var hsaAmt  = parseInt(document.getElementById('rc-hsa').value);
-      var years   = 33;
-  
-      document.getElementById('rc-rate-out').textContent = (rate * 100).toFixed(0) + '%';
-      document.getElementById('rc-roth-out').textContent = '$' + rothAmt.toLocaleString();
-      document.getElementById('rc-hsa-out').textContent  = '$' + hsaAmt.toLocaleString();
-  
-      var labels = [], rothData = [], hsaData = [], contribData = [];
-      var rothBal = 0, hsaBal = 0;
-  
-      for (var y = 0; y <= years; y++) {
-        labels.push(34 + y);
-        rothData.push(Math.round(rothBal));
-        hsaData.push(Math.round(hsaBal));
-        contribData.push(y * (rothAmt + hsaAmt));
-        if (y < years) {
-          rothBal = (rothBal + rothAmt) * (1 + rate);
-          hsaBal  = (hsaBal  + hsaAmt)  * (1 + rate);
-        }
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    padding: 32px 24px;
+    max-width: 720px;
+    margin: 0 auto;
+    line-height: 1.5;
+  }
+
+  h1 {
+    font-size: 20px;
+    font-weight: 500;
+    margin-bottom: 4px;
+  }
+
+  .subtitle {
+    font-size: 13px;
+    color: var(--text2);
+    margin-bottom: 24px;
+  }
+
+  .slider-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  .slider-label {
+    font-size: 13px;
+    color: var(--text2);
+    min-width: 130px;
+  }
+
+  input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    flex: 1;
+    height: 4px;
+    background: var(--bg3);
+    border-radius: 2px;
+    outline: none;
+    cursor: pointer;
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--text);
+    cursor: pointer;
+    border: none;
+  }
+
+  input[type="range"]::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--text);
+    cursor: pointer;
+    border: none;
+  }
+
+  .slider-val {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    min-width: 64px;
+    text-align: right;
+  }
+
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  .stat {
+    background: var(--bg2);
+    border-radius: var(--radius);
+    padding: 12px 14px;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    color: var(--text2);
+    margin-bottom: 4px;
+  }
+
+  .stat-val {
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .stat-sub {
+    font-size: 11px;
+    color: var(--text3);
+    margin-top: 2px;
+  }
+
+  .legend {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    font-size: 12px;
+    color: var(--text2);
+    margin-bottom: 8px;
+  }
+
+  .legend span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  .chart-wrap {
+    position: relative;
+    width: 100%;
+    height: 300px;
+    margin-bottom: 16px;
+  }
+
+  .note {
+    padding: 12px 16px;
+    background: var(--bg2);
+    border-radius: var(--radius-lg);
+    font-size: 12px;
+    color: var(--text2);
+    line-height: 1.6;
+  }
+
+  .note strong {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  @media (max-width: 500px) {
+    .stat-grid { grid-template-columns: 1fr 1fr; }
+    .slider-label { min-width: 100px; }
+    h1 { font-size: 17px; }
+  }
+</style>
+</head>
+<body>
+
+<h1>Roth IRA + HSA growth calculator</h1>
+<p class="subtitle">Starting at age 34, contributing annually until 67 — all growth tax-free</p>
+
+<div class="slider-row">
+  <span class="slider-label">Return rate</span>
+  <input type="range" min="4" max="12" step="1" value="7" id="rate" oninput="recalc()">
+  <span class="slider-val" id="rate-out">7%</span>
+</div>
+<div class="slider-row">
+  <span class="slider-label">Roth IRA / yr</span>
+  <input type="range" min="1000" max="7000" step="500" value="7000" id="roth" oninput="recalc()">
+  <span class="slider-val" id="roth-out">$7,000</span>
+</div>
+<div class="slider-row">
+  <span class="slider-label">HSA / yr</span>
+  <input type="range" min="500" max="4300" step="100" value="4300" id="hsa" oninput="recalc()">
+  <span class="slider-val" id="hsa-out">$4,300</span>
+</div>
+
+<div class="stat-grid" id="stats"></div>
+
+<div class="legend">
+  <span><span class="legend-dot" style="background:#639922"></span>Roth IRA (tax-free)</span>
+  <span><span class="legend-dot" style="background:#EF9F27"></span>HSA (tax-free for medical)</span>
+  <span><span class="legend-dot" style="background:#B4B2A9"></span>Total contributed</span>
+</div>
+
+<div class="chart-wrap">
+  <canvas id="chart"></canvas>
+</div>
+
+<div class="note">
+  <strong>Assumptions:</strong> Contributions made at the start of each year, compounded annually. HSA balance assumes funds are invested and not spent on current medical expenses. Roth IRA withdrawals after 59½ are fully tax-free on qualified distributions. HSA withdrawals for qualified medical expenses are tax-free at any age; non-medical withdrawals after 65 are taxed as ordinary income (no penalty). 2025 contribution limits shown. Returns are hypothetical — past market performance does not guarantee future results. Not financial advice.
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+  let myChart = null;
+
+  function fmt(n) {
+    if (n >= 1e6) return '$' + (n / 1e6).toFixed(2) + 'M';
+    return '$' + Math.round(n).toLocaleString();
+  }
+
+  function recalc() {
+    const rate    = parseInt(document.getElementById('rate').value) / 100;
+    const rothAmt = parseInt(document.getElementById('roth').value);
+    const hsaAmt  = parseInt(document.getElementById('hsa').value);
+    const years   = 33;
+
+    document.getElementById('rate-out').textContent = (rate * 100).toFixed(0) + '%';
+    document.getElementById('roth-out').textContent = '$' + rothAmt.toLocaleString();
+    document.getElementById('hsa-out').textContent  = '$' + hsaAmt.toLocaleString();
+
+    const labels = [], rothData = [], hsaData = [], contribData = [];
+    let rothBal = 0, hsaBal = 0;
+
+    for (let y = 0; y <= years; y++) {
+      labels.push(34 + y);
+      rothData.push(Math.round(rothBal));
+      hsaData.push(Math.round(hsaBal));
+      contribData.push(y * (rothAmt + hsaAmt));
+      if (y < years) {
+        rothBal = (rothBal + rothAmt) * (1 + rate);
+        hsaBal  = (hsaBal  + hsaAmt)  * (1 + rate);
       }
-  
-      var totalContrib = years * (rothAmt + hsaAmt);
-      var totalFinal   = rothBal + hsaBal;
-      var totalGain    = totalFinal - totalContrib;
-  
-      document.getElementById('rc-stats').innerHTML =
-        '<div class="rc-stat">' +
-          '<div class="rc-stat-label">Total at 67</div>' +
-          '<div class="rc-stat-val">' + rcFmt(totalFinal) + '</div>' +
-          '<div class="rc-stat-sub">all tax-free*</div>' +
-        '</div>' +
-        '<div class="rc-stat">' +
-          '<div class="rc-stat-label">You contributed</div>' +
-          '<div class="rc-stat-val">' + rcFmt(totalContrib) + '</div>' +
-          '<div class="rc-stat-sub">' + rcFmt(rothAmt + hsaAmt) + '/yr \u00d7 33 yrs</div>' +
-        '</div>' +
-        '<div class="rc-stat">' +
-          '<div class="rc-stat-label">Tax-free gains</div>' +
-          '<div class="rc-stat-val">' + rcFmt(totalGain) + '</div>' +
-          '<div class="rc-stat-sub">' + Math.round(totalGain / totalContrib * 100) + '% return on contributions</div>' +
-        '</div>';
-  
-      if (rcChart) rcChart.destroy();
-  
-      rcChart = new Chart(document.getElementById('rc-chart'), {
-        type: 'bar',
-        data: {
-          labels: labels,
-          datasets: [
-            {
-              label: 'Roth IRA',
-              data: rothData,
-              backgroundColor: '#639922',
-              stack: 'bal',
-              order: 1
-            },
-            {
-              label: 'HSA',
-              data: hsaData,
-              backgroundColor: '#EF9F27',
-              stack: 'bal',
-              order: 1
-            },
-            {
-              label: 'Total contributed',
-              data: contribData,
-              type: 'line',
-              borderColor: '#1a6fd4',
-              backgroundColor: 'transparent',
-              borderWidth: 2.5,
-              borderDash: [],
-              pointRadius: 0,
-              tension: 0.1,
-              order: 0,
-              stack: undefined
-            }
-          ]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          interaction: { mode: 'index', intersect: false },
-          plugins: {
-            legend: { display: false },
-            tooltip: {
-              callbacks: {
-                label: function(ctx) {
-                  if (ctx.dataset.label === 'Total contributed') return 'Contributed: ' + rcFmt(ctx.raw);
-                  return ctx.dataset.label + ': ' + rcFmt(ctx.raw);
-                },
-                footer: function(items) {
-                  var bal = items.filter(function(i) { return i.dataset.stack === 'bal'; })
-                                 .reduce(function(s, i) { return s + i.raw; }, 0);
-                  return 'Total balance: ' + rcFmt(bal);
-                }
+    }
+
+    const totalContrib = years * (rothAmt + hsaAmt);
+    const totalFinal   = rothBal + hsaBal;
+    const totalGain    = totalFinal - totalContrib;
+
+    document.getElementById('stats').innerHTML = `
+      <div class="stat">
+        <div class="stat-label">Total at 67</div>
+        <div class="stat-val">${fmt(totalFinal)}</div>
+        <div class="stat-sub">all tax-free*</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">You contributed</div>
+        <div class="stat-val">${fmt(totalContrib)}</div>
+        <div class="stat-sub">${fmt(rothAmt + hsaAmt)}/yr × 33 yrs</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Tax-free gains</div>
+        <div class="stat-val">${fmt(totalGain)}</div>
+        <div class="stat-sub">${Math.round(totalGain / totalContrib * 100)}% return on contributions</div>
+      </div>
+    `;
+
+    if (myChart) myChart.destroy();
+
+    myChart = new Chart(document.getElementById('chart'), {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [
+          {
+            label: 'Roth IRA',
+            data: rothData,
+            backgroundColor: '#639922',
+            stack: 'bal'
+          },
+          {
+            label: 'HSA',
+            data: hsaData,
+            backgroundColor: '#EF9F27',
+            stack: 'bal'
+          },
+          {
+            label: 'Total contributed',
+            data: contribData,
+            type: 'line',
+            borderColor: '#B4B2A9',
+            backgroundColor: 'transparent',
+            borderWidth: 1.5,
+            borderDash: [4, 3],
+            pointRadius: 0,
+            tension: 0.1,
+            stack: undefined
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label(ctx) {
+                if (ctx.dataset.label === 'Total contributed') return 'Contributed: ' + fmt(ctx.raw);
+                return ctx.dataset.label + ': ' + fmt(ctx.raw);
+              },
+              footer(items) {
+                const bal = items.filter(i => i.dataset.stack === 'bal').reduce((s, i) => s + i.raw, 0);
+                return 'Total balance: ' + fmt(bal);
               }
             }
-          },
-          scales: {
-            x: {
-              stacked: true,
-              ticks: { autoSkip: true, maxTicksLimit: 10, color: '#888780', font: { size: 11 } },
-              grid: { display: false }
+          }
+        },
+        scales: {
+          x: {
+            stacked: true,
+            ticks: {
+              autoSkip: true,
+              maxTicksLimit: 10,
+              color: '#888780',
+              font: { size: 11 }
             },
-            y: {
-              stacked: true,
-              ticks: {
-                color: '#888780',
-                font: { size: 11 },
-                callback: function(v) {
-                  return v >= 1e6 ? '$' + (v / 1e6).toFixed(1) + 'M' : '$' + (v / 1000).toFixed(0) + 'K';
-                }
-              },
-              grid: { color: 'rgba(136,135,128,0.15)' }
-            }
+            grid: { display: false }
+          },
+          y: {
+            stacked: true,
+            ticks: {
+              color: '#888780',
+              font: { size: 11 },
+              callback: v => v >= 1e6 ? '$' + (v / 1e6).toFixed(1) + 'M' : '$' + (v / 1000).toFixed(0) + 'K'
+            },
+            grid: { color: 'rgba(136,135,128,0.15)' }
           }
         }
-      });
-    };
-  
-    rcRecalc();
-  })();
-  </script>
+      }
+    });
+  }
+
+  recalc();
+</script>
+</body>
+</html>
