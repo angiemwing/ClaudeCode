@@ -1,259 +1,330 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GHG Emissions Dashboard — Scope 1, 2 & 3</title>
+<!-- Elementor-safe embed -->
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;0,800;1,400&display=swap" rel="stylesheet">
-<style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: #F7F3EE;
-    min-height: 100vh;
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    padding: 48px 24px;
-  }
+<div class="ghg-scope-widget" data-ghg-scope-widget>
+  <style>
+    .ghg-scope-widget, .ghg-scope-widget * { box-sizing: border-box; }
+    .ghg-scope-widget {
+      font-family: "DM Sans", sans-serif;
+      background: #F7F3EE;
+      width: 100%;
+      padding: 24px;
+      border-radius: 16px;
+      color: #1A1208;
+    }
 
-  .page { width: 100%; max-width: 860px; }
+    .ghg-scope-widget .page { width: 100%; max-width: 860px; margin: 0 auto; }
+    .ghg-scope-widget .header { margin-bottom: 36px; }
+    .ghg-scope-widget .header .eyebrow {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: #7A3B1E; margin-bottom: 10px;
+    }
+    .ghg-scope-widget .header h1 {
+      font-size: 36px; font-weight: 800; color: #2E1A08; line-height: 1.1;
+      margin: 0 0 10px;
+    }
+    .ghg-scope-widget .header p {
+      font-size: 14px; color: rgba(46,26,8,0.55); line-height: 1.6; max-width: 860px;
+      margin: 0;
+    }
+    .ghg-scope-widget .divider { width: 48px; height: 3px; background: #E8732A; border-radius: 2px; margin: 16px 0; }
 
-  .header { margin-bottom: 36px; }
-  .header .eyebrow {
-    font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
-    text-transform: uppercase; color: #7A3B1E; margin-bottom: 10px;
-  }
-  .header h1 {
-    font-size: 36px; font-weight: 800; color: #2E1A08; line-height: 1.1;
-    margin-bottom: 10px;
-  }
-  .header p {
-    font-size: 14px; color: rgba(46,26,8,0.55); line-height: 1.6; max-width: 860px;
-  }
-  .divider { width: 48px; height: 3px; background: #E8732A; border-radius: 2px; margin: 16px 0; }
+    .ghg-scope-widget .metrics { display: flex; gap: 10px; margin-bottom: 28px; flex-wrap: wrap; }
+    .ghg-scope-widget .m-card { flex: 1; min-width: 120px; padding: 18px 20px; border-radius: 14px; }
+    .ghg-scope-widget .m-card .ml { font-size: 10px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 8px; }
+    .ghg-scope-widget .m-card .mv { font-size: 30px; font-weight: 800; line-height: 1; }
+    .ghg-scope-widget .m-card .mu { font-size: 12px; font-weight: 400; }
 
-  .metrics { display: flex; gap: 10px; margin-bottom: 28px; flex-wrap: wrap; }
-  .m-card { flex: 1; min-width: 120px; padding: 18px 20px; border-radius: 14px; }
-  .m-card .ml { font-size: 10px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 8px; }
-  .m-card .mv { font-size: 30px; font-weight: 800; line-height: 1; }
-  .m-card .mu { font-size: 12px; font-weight: 400; }
+    .ghg-scope-widget .top { display: flex; align-items: stretch; gap: 16px; width: 100%; }
+    .ghg-scope-widget .left-panel { flex: 0 0 30%; display: flex; flex-direction: column; gap: 10px; }
 
-  .top { display: flex; align-items: stretch; gap: 16px; width: 100%; }
+    .ghg-scope-widget .scope-btn {
+      flex: 1;
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 12px 14px 12px 18px;
+      border: 1.5px solid rgba(0,0,0,0.1); border-radius: 14px; cursor: pointer;
+      background: #fff; text-align: left; position: relative; overflow: hidden;
+      transition: border-color 0.15s, background 0.15s, transform 0.1s;
+      font-family: "DM Sans", sans-serif;
+    }
+    .ghg-scope-widget .scope-btn:hover { border-color: rgba(0,0,0,0.2); transform: translateY(-1px); }
+    .ghg-scope-widget .scope-btn:active { transform: translateY(0); }
+    .ghg-scope-widget .scope-btn.active { border-width: 2px; }
+    .ghg-scope-widget .scope-btn .accent { position: absolute; left: 0; top: 0; bottom: 0; width: 5px; border-radius: 14px 0 0 14px; }
+    .ghg-scope-widget .scope-btn .sl { font-size: 10px; font-weight: 700; margin-left: 8px; letter-spacing: 0.08em; text-transform: uppercase; }
+    .ghg-scope-widget .scope-btn .sp { font-size: 24px; font-weight: 800; margin-left: 8px; line-height: 1.15; font-family: "DM Sans", sans-serif; }
+    .ghg-scope-widget .scope-btn .sv { font-size: 10px; color: rgba(0,0,0,0.38); margin-left: 8px; margin-top: 3px; line-height: 1.4; }
 
-  .left-panel { flex: 0 0 30%; display: flex; flex-direction: column; gap: 10px; }
+    .ghg-scope-widget .chart-area { flex: 0 0 70%; }
+    .ghg-scope-widget .chart-wrap { position: relative; width: 100%; height: 320px; }
+    .ghg-scope-widget .center-label { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); text-align: center; pointer-events: none; }
+    .ghg-scope-widget .center-label .cn { font-size: 30px; font-weight: 800; color: #7A3B1E; font-family: "DM Sans", sans-serif; line-height: 1; }
+    .ghg-scope-widget .center-label .cs { font-size: 11px; color: rgba(0,0,0,0.4); font-family: "DM Sans", sans-serif; margin-top: 4px; }
 
-  .scope-btn {
-    flex: 1;
-    display: flex; flex-direction: column; justify-content: center;
-    padding: 12px 14px 12px 18px;
-    border: 1.5px solid rgba(0,0,0,0.1); border-radius: 14px; cursor: pointer;
-    background: #fff; text-align: left; position: relative; overflow: hidden;
-    transition: border-color 0.15s, background 0.15s, transform 0.1s;
-    font-family: 'DM Sans', sans-serif;
-  }
-  .scope-btn:hover { border-color: rgba(0,0,0,0.2); transform: translateY(-1px); }
-  .scope-btn:active { transform: translateY(0); }
-  .scope-btn.active { border-width: 2px; }
-  .scope-btn .accent { position: absolute; left: 0; top: 0; bottom: 0; width: 5px; border-radius: 14px 0 0 14px; }
-  .scope-btn .sl { font-size: 10px; font-weight: 700; margin-left: 8px; letter-spacing: 0.08em; text-transform: uppercase; }
-  .scope-btn .sp { font-size: 24px; font-weight: 800; margin-left: 8px; line-height: 1.15; font-family: 'DM Sans', sans-serif; }
-  .scope-btn .sv { font-size: 10px; color: rgba(0,0,0,0.38); margin-left: 8px; margin-top: 3px; line-height: 1.4; }
+    .ghg-scope-widget .legend { display: flex; justify-content: center; gap: 20px; margin-top: 14px; flex-wrap: wrap; }
+    .ghg-scope-widget .legend-item { display: flex; align-items: center; gap: 7px; font-size: 12px; color: rgba(46,26,8,0.6); font-family: "DM Sans", sans-serif; }
+    .ghg-scope-widget .legend-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
 
-  .chart-area { flex: 0 0 70%; }
-  .chart-wrap { position: relative; width: 100%; height: 320px; }
-  .center-label { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); text-align: center; pointer-events: none; }
-  .center-label .cn { font-size: 30px; font-weight: 800; color: #7A3B1E; font-family: 'DM Sans', sans-serif; line-height: 1; }
-  .center-label .cs { font-size: 11px; color: rgba(0,0,0,0.4); font-family: 'DM Sans', sans-serif; margin-top: 4px; }
+    .ghg-scope-widget .detail-panel {
+      margin-top: 24px; border-radius: 14px; overflow: hidden;
+      border: 1.5px solid rgba(0,0,0,0.08); background: #fff;
+      animation: ghgSlideIn 0.2s ease;
+      display: none;
+    }
+    @keyframes ghgSlideIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
-  .legend { display: flex; justify-content: center; gap: 20px; margin-top: 14px; flex-wrap: wrap; }
-  .legend-item { display: flex; align-items: center; gap: 7px; font-size: 12px; color: rgba(46,26,8,0.6); font-family: 'DM Sans', sans-serif; }
-  .legend-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+    .ghg-scope-widget .dh {
+      display: flex; align-items: center; gap: 10px;
+      padding: 16px 22px; border-bottom: 1px solid rgba(0,0,0,0.07);
+      font-family: "DM Sans", sans-serif;
+    }
+    .ghg-scope-widget .dh .dot { width: 11px; height: 11px; border-radius: 50%; flex-shrink: 0; }
+    .ghg-scope-widget .dh .dt { font-size: 14px; font-weight: 800; color: #1a1208; }
+    .ghg-scope-widget .dh .ds { font-size: 12px; color: rgba(0,0,0,0.38); margin-left: auto; }
 
-  .detail-panel {
-    margin-top: 24px; border-radius: 14px; overflow: hidden;
-    border: 1.5px solid rgba(0,0,0,0.08); background: #fff;
-    animation: slideIn 0.2s ease;
-  }
-  @keyframes slideIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+    .ghg-scope-widget .dr {
+      display: flex; align-items: center; gap: 14px;
+      padding: 12px 22px; border-bottom: 1px solid rgba(0,0,0,0.05);
+      transition: background 0.1s; font-family: "DM Sans", sans-serif;
+    }
+    .ghg-scope-widget .dr:hover { background: rgba(0,0,0,0.02); }
+    .ghg-scope-widget .dr:last-child { border-bottom: none; }
+    .ghg-scope-widget .dr .drk { font-size: 11px; color: rgba(0,0,0,0.28); min-width: 18px; font-weight: 700; }
+    .ghg-scope-widget .dr .drn { font-size: 13px; color: #1a1208; flex: 1; }
+    .ghg-scope-widget .dr .bar-w { width: 120px; height: 5px; background: rgba(0,0,0,0.07); border-radius: 3px; overflow: hidden; }
+    .ghg-scope-widget .dr .bar-f { height: 100%; border-radius: 3px; }
+    .ghg-scope-widget .dr .dra { font-size: 15px; font-weight: 800; color: #1a1208; min-width: 64px; text-align: right; }
+    .ghg-scope-widget .dr .drp { font-size: 11px; color: rgba(0,0,0,0.35); min-width: 36px; text-align: right; }
 
-  .dh {
-    display: flex; align-items: center; gap: 10px;
-    padding: 16px 22px; border-bottom: 1px solid rgba(0,0,0,0.07);
-    font-family: 'DM Sans', sans-serif;
-  }
-  .dh .dot { width: 11px; height: 11px; border-radius: 50%; flex-shrink: 0; }
-  .dh .dt { font-size: 14px; font-weight: 800; color: #1a1208; }
-  .dh .ds { font-size: 12px; color: rgba(0,0,0,0.38); margin-left: auto; }
+    .ghg-scope-widget .footer {
+      margin-top: 36px; padding-top: 20px;
+      border-top: 1px solid rgba(0,0,0,0.1);
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;
+    }
+    .ghg-scope-widget .footer p { font-size: 11px; color: rgba(46,26,8,0.4); margin: 0; }
+    .ghg-scope-widget .footer .tag {
+      font-size: 11px; font-weight: 700; color: #7A3B1E;
+      background: rgba(122,59,30,0.1); padding: 4px 12px; border-radius: 20px;
+      letter-spacing: 0.04em;
+    }
 
-  .dr {
-    display: flex; align-items: center; gap: 14px;
-    padding: 12px 22px; border-bottom: 1px solid rgba(0,0,0,0.05);
-    transition: background 0.1s; font-family: 'DM Sans', sans-serif;
-  }
-  .dr:hover { background: rgba(0,0,0,0.02); }
-  .dr:last-child { border-bottom: none; }
-  .dr .drk { font-size: 11px; color: rgba(0,0,0,0.28); min-width: 18px; font-weight: 700; }
-  .dr .drn { font-size: 13px; color: #1a1208; flex: 1; }
-  .dr .bar-w { width: 120px; height: 5px; background: rgba(0,0,0,0.07); border-radius: 3px; overflow: hidden; }
-  .dr .bar-f { height: 100%; border-radius: 3px; }
-  .dr .dra { font-size: 15px; font-weight: 800; color: #1a1208; min-width: 64px; text-align: right; }
-  .dr .drp { font-size: 11px; color: rgba(0,0,0,0.35); min-width: 36px; text-align: right; }
+    @media (max-width: 580px) {
+      .ghg-scope-widget .header h1 { font-size: 26px; }
+      .ghg-scope-widget .top { flex-direction: column-reverse; }
+      .ghg-scope-widget .left-panel { flex: unset; flex-direction: row; }
+      .ghg-scope-widget .chart-area { flex: unset; }
+      .ghg-scope-widget .scope-btn .sp { font-size: 18px; }
+      .ghg-scope-widget .dr .bar-w { display: none; }
+    }
+  </style>
 
-  .footer {
-    margin-top: 36px; padding-top: 20px;
-    border-top: 1px solid rgba(0,0,0,0.1);
-    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;
-  }
-  .footer p { font-size: 11px; color: rgba(46,26,8,0.4); }
-  .footer .tag {
-    font-size: 11px; font-weight: 700; color: #7A3B1E;
-    background: rgba(122,59,30,0.1); padding: 4px 12px; border-radius: 20px;
-    letter-spacing: 0.04em;
-  }
-
-  @media (max-width: 580px) {
-    .header h1 { font-size: 26px; }
-    .top { flex-direction: column-reverse; }
-    .left-panel { flex: unset; flex-direction: row; }
-    .chart-area { flex: unset; }
-    .scope-btn .sp { font-size: 18px; }
-    .dr .bar-w { display: none; }
-  }
-</style>
-</head>
-<body>
-<div class="page">
-
-  <div class="header">
-    <div class="eyebrow">Sustainability Report · 2024</div>
-    <h1>Scope 1, 2 & 3 Emissions Dashboard</h1>
-    <div class="divider"></div>
-    <p>Click any scope to explore its emission sources, ranked by volume. Data represents a major commercial airline — the industry leading on GHG disclosure.</p>
-  </div>
-
-  <div class="metrics">
-    <div class="m-card" style="background:#5C7A3E;">
-      <div class="ml" style="color:rgba(255,255,255,0.6);">Total emissions</div>
-      <div class="mv" style="color:#fff;">98.4 <span class="mu" style="color:rgba(255,255,255,0.55);">Mt CO₂e</span></div>
+  <div class="page">
+    <div class="header">
+      <div class="eyebrow">Sustainability Report · 2024</div>
+      <h1>Scope 1, 2 & 3 Emissions Dashboard</h1>
+      <div class="divider"></div>
+      <p>Click any scope to explore its emission sources, ranked by volume. Data represents a major commercial airline - the industry leading on GHG disclosure.</p>
     </div>
-    <div class="m-card" style="background:#E8732A;">
-      <div class="ml" style="color:rgba(255,255,255,0.65);">Year-over-year</div>
-      <div class="mv" style="color:#fff;">+3.2 <span class="mu" style="color:rgba(255,255,255,0.6);">%</span></div>
-    </div>
-    <div class="m-card" style="background:#7A3B1E;">
-      <div class="ml" style="color:rgba(255,255,255,0.55);">Intensity</div>
-      <div class="mv" style="color:#fff;">0.087 <span class="mu" style="color:rgba(255,255,255,0.5);">kg/RPK</span></div>
-    </div>
-    <div class="m-card" style="background:#2E1A08;">
-      <div class="ml" style="color:rgba(255,255,255,0.5);">Reporting year</div>
-      <div class="mv" style="color:#fff;">2024</div>
-    </div>
-  </div>
 
-  <div class="top">
-    <div class="left-panel" id="scopeBtns"></div>
-    <div class="chart-area">
-      <div class="chart-wrap">
-        <canvas id="donut" role="img" aria-label="Doughnut chart: Scope 1 78%, Scope 2 4%, Scope 3 18% of total airline emissions">Scope 1: 78%, Scope 2: 4%, Scope 3: 18%</canvas>
-        <div class="center-label"><div class="cn">98.4</div><div class="cs">Mt CO₂e total</div></div>
+    <div class="metrics">
+      <div class="m-card" style="background:#5C7A3E;">
+        <div class="ml" style="color:rgba(255,255,255,0.6);">Total emissions</div>
+        <div class="mv" style="color:#fff;">98.4 <span class="mu" style="color:rgba(255,255,255,0.55);">Mt CO2e</span></div>
       </div>
-      <div class="legend" id="legend"></div>
+      <div class="m-card" style="background:#E8732A;">
+        <div class="ml" style="color:rgba(255,255,255,0.65);">Year-over-year</div>
+        <div class="mv" style="color:#fff;">+3.2 <span class="mu" style="color:rgba(255,255,255,0.6);">%</span></div>
+      </div>
+      <div class="m-card" style="background:#7A3B1E;">
+        <div class="ml" style="color:rgba(255,255,255,0.55);">Intensity</div>
+        <div class="mv" style="color:#fff;">0.087 <span class="mu" style="color:rgba(255,255,255,0.5);">kg/RPK</span></div>
+      </div>
+      <div class="m-card" style="background:#2E1A08;">
+        <div class="ml" style="color:rgba(255,255,255,0.5);">Reporting year</div>
+        <div class="mv" style="color:#fff;">2024</div>
+      </div>
+    </div>
+
+    <div class="top">
+      <div class="left-panel" data-scope-btns></div>
+      <div class="chart-area">
+        <div class="chart-wrap">
+          <canvas data-donut role="img" aria-label="Doughnut chart: Scope 1 78%, Scope 2 4%, Scope 3 18% of total airline emissions">Scope 1: 78%, Scope 2: 4%, Scope 3: 18%</canvas>
+          <div class="center-label"><div class="cn">98.4</div><div class="cs">Mt CO2e total</div></div>
+        </div>
+        <div class="legend" data-legend></div>
+      </div>
+    </div>
+
+    <div class="detail-panel" data-detail-panel></div>
+
+    <div class="footer">
+      <p>Figures are illustrative. Methodology follows GHG Protocol Corporate Standard.</p>
+      <span class="tag">#Sustainability #ESG #NetZero</span>
     </div>
   </div>
-
-  <div id="detailPanel" style="display:none;"></div>
-
-  <div class="footer">
-    <p>Figures are illustrative. Methodology follows GHG Protocol Corporate Standard.</p>
-    <span class="tag">#Sustainability #ESG #NetZero</span>
-  </div>
-
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
-const SCOPES = [
-  { id:1, label:'Scope 1', desc:'Direct emissions', color:'#E8732A', mt:76.7,
-    items:[{name:'Jet fuel combustion (flights)',mt:70.2},{name:'Ground vehicle fuel (diesel/petrol)',mt:3.1},{name:'Auxiliary power units (APUs)',mt:1.9},{name:'Ground support equipment',mt:0.9},{name:'Heating & boilers at facilities',mt:0.6}]},
-  { id:2, label:'Scope 2', desc:'Purchased energy', color:'#5C7A3E', mt:3.9,
-    items:[{name:'Airport terminal electricity',mt:1.8},{name:'Maintenance hangar electricity',mt:0.9},{name:'Office & data centre electricity',mt:0.7},{name:'Ground heat / steam purchased',mt:0.5}]},
-  { id:3, label:'Scope 3', desc:'Value chain emissions', color:'#7A3B1E', mt:17.8,
-    items:[{name:'Passenger & crew air travel (non-op)',mt:5.4},{name:'Jet fuel production & extraction',mt:4.2},{name:'Freight & cargo logistics',mt:3.1},{name:'Purchased goods & catering',mt:2.0},{name:'Business travel (ground)',mt:1.1},{name:'Employee commuting',mt:0.9},{name:'Waste generated in operations',mt:0.6},{name:'Capital goods (aircraft leasing)',mt:0.5}]}
-];
-const TOTAL = SCOPES.reduce((s,x)=>s+x.mt,0);
-let activeScope=null, donutChart=null;
-function pct(v){return ((v/TOTAL)*100).toFixed(1);}
-
-function buildButtons(){
-  const c=document.getElementById('scopeBtns');
-  const leg=document.getElementById('legend');
-  SCOPES.forEach(sc=>{
-    const btn=document.createElement('button');
-    btn.className='scope-btn'; btn.id='btn-'+sc.id;
-    btn.innerHTML=`<div class="accent" style="background:${sc.color}"></div><div class="sl" style="color:${sc.color}">${sc.label}</div><div class="sp" style="color:${sc.color}">${pct(sc.mt)}%</div><div class="sv">${sc.mt.toFixed(1)} Mt · ${sc.desc}</div>`;
-    btn.addEventListener('click',()=>toggleScope(sc));
-    c.appendChild(btn);
-    const li=document.createElement('div');
-    li.className='legend-item';
-    li.innerHTML=`<span class="legend-dot" style="background:${sc.color}"></span><span>${sc.label}: ${sc.mt.toFixed(1)} Mt (${pct(sc.mt)}%)</span>`;
-    leg.appendChild(li);
-  });
-}
-
-function toggleScope(sc){
-  if(activeScope&&activeScope.id===sc.id){
-    activeScope=null; updateActive();
-    document.getElementById('detailPanel').style.display='none';
-    updateChartHighlight(null);
-  } else {
-    activeScope=sc; updateActive(); renderDetail(sc); updateChartHighlight(sc);
-    setTimeout(()=>document.getElementById('detailPanel').scrollIntoView({behavior:'smooth',block:'nearest'}),100);
-  }
-}
-
-function updateActive(){
-  SCOPES.forEach(sc=>{
-    const btn=document.getElementById('btn-'+sc.id);
-    if(activeScope&&activeScope.id===sc.id){btn.classList.add('active');btn.style.borderColor=sc.color;btn.style.background=sc.color+'15';}
-    else{btn.classList.remove('active');btn.style.borderColor='';btn.style.background='';}
-  });
-}
-
-function renderDetail(sc){
-  const panel=document.getElementById('detailPanel');
-  const sorted=[...sc.items].sort((a,b)=>b.mt-a.mt);
-  const max=sorted[0].mt;
-  panel.innerHTML=`<div class="dh"><div class="dot" style="background:${sc.color}"></div><div class="dt">${sc.label} — ${sc.desc}</div><div class="ds">${sc.items.length} sources · ${sc.mt.toFixed(1)} Mt CO₂e</div></div>`
-    +sorted.map((item,i)=>`<div class="dr"><span class="drk">${i+1}</span><span class="drn">${item.name}</span><div class="bar-w"><div class="bar-f" style="width:${((item.mt/max)*100).toFixed(0)}%;background:${sc.color}"></div></div><span class="dra">${item.mt.toFixed(1)} Mt</span><span class="drp">${((item.mt/sc.mt)*100).toFixed(0)}%</span></div>`).join('');
-  panel.style.display='block';
-}
-
-function updateChartHighlight(sc){
-  if(!donutChart)return;
-  donutChart.data.datasets[0].backgroundColor=SCOPES.map(s=>!sc||s.id===sc.id?s.color:s.color+'33');
-  donutChart.data.datasets[0].borderWidth=SCOPES.map(s=>sc&&s.id===sc.id?3:0);
-  donutChart.update('none');
-}
-
-function buildChart(){
-  const ctx=document.getElementById('donut').getContext('2d');
-  donutChart=new Chart(ctx,{
-    type:'doughnut',
-    data:{
-      labels:SCOPES.map(s=>s.label),
-      datasets:[{data:SCOPES.map(s=>s.mt),backgroundColor:SCOPES.map(s=>s.color),borderColor:'#F7F3EE',borderWidth:3,hoverOffset:10,borderRadius:4,spacing:3}]
-    },
-    options:{responsive:true,maintainAspectRatio:false,cutout:'70%',
-      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>` ${SCOPES[ctx.dataIndex].mt.toFixed(1)} Mt CO₂e (${pct(SCOPES[ctx.dataIndex].mt)}%)`},bodyFont:{family:'DM Sans',size:13},titleFont:{family:'DM Sans',size:13,weight:'700'},backgroundColor:'#2E1A08',padding:10,cornerRadius:8}},
-      onClick:(e,els)=>{if(els.length>0)toggleScope(SCOPES[els[0].index]);}
+  (function () {
+    var widget = document.currentScript ? document.currentScript.previousElementSibling : null;
+    if (!widget || !widget.matches(".ghg-scope-widget")) {
+      widget = document.querySelector(".ghg-scope-widget[data-ghg-scope-widget]:not([data-ghg-ready])");
     }
-  });
-}
+    if (!widget) return;
+    widget.setAttribute("data-ghg-ready", "true");
 
-buildButtons();
-buildChart();
+    var SCOPES = [
+      { id: 1, label: "Scope 1", desc: "Direct emissions", color: "#E8732A", mt: 76.7,
+        items: [{ name: "Jet fuel combustion (flights)", mt: 70.2 }, { name: "Ground vehicle fuel (diesel/petrol)", mt: 3.1 }, { name: "Auxiliary power units (APUs)", mt: 1.9 }, { name: "Ground support equipment", mt: 0.9 }, { name: "Heating & boilers at facilities", mt: 0.6 }] },
+      { id: 2, label: "Scope 2", desc: "Purchased energy", color: "#5C7A3E", mt: 3.9,
+        items: [{ name: "Airport terminal electricity", mt: 1.8 }, { name: "Maintenance hangar electricity", mt: 0.9 }, { name: "Office & data centre electricity", mt: 0.7 }, { name: "Ground heat / steam purchased", mt: 0.5 }] },
+      { id: 3, label: "Scope 3", desc: "Value chain emissions", color: "#7A3B1E", mt: 17.8,
+        items: [{ name: "Passenger & crew air travel (non-op)", mt: 5.4 }, { name: "Jet fuel production & extraction", mt: 4.2 }, { name: "Freight & cargo logistics", mt: 3.1 }, { name: "Purchased goods & catering", mt: 2.0 }, { name: "Business travel (ground)", mt: 1.1 }, { name: "Employee commuting", mt: 0.9 }, { name: "Waste generated in operations", mt: 0.6 }, { name: "Capital goods (aircraft leasing)", mt: 0.5 }] }
+    ];
+    var TOTAL = SCOPES.reduce(function (sum, s) { return sum + s.mt; }, 0);
+    var activeScope = null;
+    var donutChart = null;
+
+    var scopeBtns = widget.querySelector("[data-scope-btns]");
+    var legend = widget.querySelector("[data-legend]");
+    var detailPanel = widget.querySelector("[data-detail-panel]");
+    var donutCanvas = widget.querySelector("[data-donut]");
+
+    function pct(v) { return ((v / TOTAL) * 100).toFixed(1); }
+
+    function updateActive() {
+      SCOPES.forEach(function (sc) {
+        var btn = scopeBtns.querySelector('[data-btn-id="' + sc.id + '"]');
+        if (!btn) return;
+        if (activeScope && activeScope.id === sc.id) {
+          btn.classList.add("active");
+          btn.style.borderColor = sc.color;
+          btn.style.background = sc.color + "15";
+        } else {
+          btn.classList.remove("active");
+          btn.style.borderColor = "";
+          btn.style.background = "";
+        }
+      });
+    }
+
+    function renderDetail(sc) {
+      var sorted = sc.items.slice().sort(function (a, b) { return b.mt - a.mt; });
+      var max = sorted[0].mt;
+      detailPanel.innerHTML =
+        '<div class="dh"><div class="dot" style="background:' + sc.color + '"></div><div class="dt">' + sc.label + " - " + sc.desc + '</div><div class="ds">' + sc.items.length + " sources - " + sc.mt.toFixed(1) + " Mt CO2e</div></div>" +
+        sorted.map(function (item, i) {
+          return '<div class="dr"><span class="drk">' + (i + 1) + '</span><span class="drn">' + item.name + '</span><div class="bar-w"><div class="bar-f" style="width:' + ((item.mt / max) * 100).toFixed(0) + "%;background:" + sc.color + '"></div></div><span class="dra">' + item.mt.toFixed(1) + ' Mt</span><span class="drp">' + ((item.mt / sc.mt) * 100).toFixed(0) + "%</span></div>";
+        }).join("");
+      detailPanel.style.display = "block";
+    }
+
+    function updateChartHighlight(sc) {
+      if (!donutChart) return;
+      donutChart.data.datasets[0].backgroundColor = SCOPES.map(function (s) { return !sc || s.id === sc.id ? s.color : s.color + "33"; });
+      donutChart.data.datasets[0].borderWidth = SCOPES.map(function (s) { return sc && s.id === sc.id ? 3 : 0; });
+      donutChart.update("none");
+    }
+
+    function toggleScope(sc) {
+      if (activeScope && activeScope.id === sc.id) {
+        activeScope = null;
+        updateActive();
+        detailPanel.style.display = "none";
+        updateChartHighlight(null);
+      } else {
+        activeScope = sc;
+        updateActive();
+        renderDetail(sc);
+        updateChartHighlight(sc);
+        setTimeout(function () {
+          detailPanel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        }, 100);
+      }
+    }
+
+    function buildButtons() {
+      SCOPES.forEach(function (sc) {
+        var btn = document.createElement("button");
+        btn.className = "scope-btn";
+        btn.type = "button";
+        btn.setAttribute("data-btn-id", String(sc.id));
+        btn.innerHTML = '<div class="accent" style="background:' + sc.color + '"></div><div class="sl" style="color:' + sc.color + '">' + sc.label + '</div><div class="sp" style="color:' + sc.color + '">' + pct(sc.mt) + '%</div><div class="sv">' + sc.mt.toFixed(1) + " Mt - " + sc.desc + "</div>";
+        btn.addEventListener("click", function () { toggleScope(sc); });
+        scopeBtns.appendChild(btn);
+
+        var li = document.createElement("div");
+        li.className = "legend-item";
+        li.innerHTML = '<span class="legend-dot" style="background:' + sc.color + '"></span><span>' + sc.label + ": " + sc.mt.toFixed(1) + " Mt (" + pct(sc.mt) + "%)</span>";
+        legend.appendChild(li);
+      });
+    }
+
+    function buildChart() {
+      var ctx = donutCanvas.getContext("2d");
+      donutChart = new Chart(ctx, {
+        type: "doughnut",
+        data: {
+          labels: SCOPES.map(function (s) { return s.label; }),
+          datasets: [{
+            data: SCOPES.map(function (s) { return s.mt; }),
+            backgroundColor: SCOPES.map(function (s) { return s.color; }),
+            borderColor: "#F7F3EE",
+            borderWidth: 3,
+            hoverOffset: 10,
+            borderRadius: 4,
+            spacing: 3
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          cutout: "70%",
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: function (ctx2) {
+                  var scope = SCOPES[ctx2.dataIndex];
+                  return " " + scope.mt.toFixed(1) + " Mt CO2e (" + pct(scope.mt) + "%)";
+                }
+              },
+              bodyFont: { family: "DM Sans", size: 13 },
+              titleFont: { family: "DM Sans", size: 13, weight: "700" },
+              backgroundColor: "#2E1A08",
+              padding: 10,
+              cornerRadius: 8
+            }
+          },
+          onClick: function (_e, els) {
+            if (els.length > 0) toggleScope(SCOPES[els[0].index]);
+          }
+        }
+      });
+    }
+
+    function init() {
+      buildButtons();
+      buildChart();
+    }
+
+    if (window.Chart) {
+      init();
+      return;
+    }
+
+    var scriptId = "ghg-chartjs-loader";
+    var existing = document.getElementById(scriptId);
+    if (existing) {
+      existing.addEventListener("load", init, { once: true });
+      return;
+    }
+
+    var s = document.createElement("script");
+    s.id = scriptId;
+    s.src = "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js";
+    s.onload = init;
+    document.head.appendChild(s);
+  })();
 </script>
-</body>
-</html>
